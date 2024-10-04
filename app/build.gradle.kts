@@ -63,8 +63,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
+    implementation(libs.firebase.auth.ktx)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -93,9 +93,7 @@ dependencies {
     implementation(libs.coil.compose)
     //material icons
     implementation ("androidx.compose.material:material-icons-extended:1.7.2")
-    //firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
-    implementation ("com.google.android.gms:play-services-auth:21.2.0")
+    implementation ("com.github.commandiron:ComposeLoading:1.0.4")
 
 
 }

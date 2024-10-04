@@ -1,5 +1,6 @@
 package com.batman.charoom.features.features_authentication.presentation.screens.login_page
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,20 +8,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -34,20 +31,72 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batman.charoom.R
+import com.batman.charoom.common.component.ChaRoomLoadingWheel
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
-import com.batman.charoom.navigation.NavSignUpScreen
+
+@Composable
+fun LoginScreenRoute(
+    modifier: Modifier = Modifier,
+    navigateToHomeScreen: () -> Unit,
+    navigateToSignupScreen: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel(),
+) {
+    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+
+    LoginScreen(
+        uiState = loginUiState,
+        navigateToSignupScreen = navigateToSignupScreen,
+        navigateToHomeScreen = navigateToHomeScreen,
+        onLoginClick = viewModel::login
+    )
+}
 
 @Composable
 fun LoginScreen(
-    navController: NavController
+    uiState: LoginUiState,
+    navigateToHomeScreen: () -> Unit,
+    navigateToSignupScreen: () -> Unit,
+    onLoginClick: (email: String, password: String) -> Unit
+) {
+    val context = LocalContext.current
+
+    Box {
+        LoginScreenContent(
+            navigateToSignupScreen = navigateToSignupScreen,
+            onLoginClick = onLoginClick
+        )
+
+        when (uiState) {
+            LoginUiState.Initial -> Unit
+
+            LoginUiState.ShowProgress -> ChaRoomLoadingWheel()
+
+            is LoginUiState.ShowValidationErrorString -> {
+                Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
+            }
+
+            LoginUiState.Success -> {
+                navigateToHomeScreen()
+            }
+        }
+    }
+}
+
+@Composable
+fun LoginScreenContent(
+    modifier: Modifier = Modifier,
+    navigateToSignupScreen: () -> Unit,
+    onLoginClick: (email: String, password: String) -> Unit
 ) {
     var rememberPassword by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -110,9 +159,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(55.dp),
-                onClick = {
-                    // Handle Sign In
-                },
+                onClick = { onLoginClick("email", "password") },
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Text(
@@ -125,7 +172,10 @@ fun LoginScreen(
                 text = "Or",
                 style = MaterialTheme.typography.labelLarge
             )
-            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.padding(10.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.padding(10.dp)
+            ) {
                 Button(
                     modifier = Modifier
                         .height(55.dp)
@@ -158,9 +208,7 @@ fun LoginScreen(
                 Button(
                     modifier = Modifier
                         .height(55.dp)
-                        .weight(1f)
-
-                    ,
+                        .weight(1f),
                     onClick = {
                         // Handle Sign In From Google
                     },
@@ -198,9 +246,7 @@ fun LoginScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .padding(start = 4.dp)
-                    .clickable {
-                        navController.navigate(NavSignUpScreen)
-                    }
+                    .clickable { navigateToSignupScreen() }
             )
         }
     }
