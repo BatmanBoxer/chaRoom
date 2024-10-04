@@ -48,7 +48,7 @@ import com.batman.charoom.navigation.NavLogInScreen
 fun SignUpScreen(
     navController: NavController,
     signUpViewModel: SignUpViewModel = hiltViewModel(),
-                 ){
+) {
     var agreeToTerms by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
@@ -90,7 +90,10 @@ fun SignUpScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 10.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 10.dp)
+                ) {
                     Checkbox(
                         checked = agreeToTerms,
                         onCheckedChange = { agreeToTerms = it }
@@ -125,7 +128,6 @@ fun SignUpScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
 
 
         }
