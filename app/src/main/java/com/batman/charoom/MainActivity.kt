@@ -15,9 +15,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.features.features_authentication.presentation.screens.login_page.LoginScreen
+import com.batman.charoom.features.features_authentication.presentation.screens.signup_page.SignUpScreen
 import com.batman.charoom.navigation.NavLogInScreen
+import com.batman.charoom.navigation.NavSignUpScreen
 import com.batman.charoom.ui.theme.ChaRoomTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ){
                         composable<NavLogInScreen> {
-                           LoginScreen()
+                           LoginScreen(navController)
+                        }
+                        composable<NavSignUpScreen> {
+                            SignUpScreen(navController)
                         }
                     }
 

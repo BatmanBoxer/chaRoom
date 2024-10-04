@@ -38,10 +38,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.batman.charoom.R
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
+import com.batman.charoom.navigation.NavSignUpScreen
+
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    navController: NavController
+) {
     var rememberPassword by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
@@ -125,6 +130,12 @@ fun LoginScreen() {
                     modifier = Modifier
                         .height(55.dp)
                         .weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Blue.copy(alpha = 0.8f),
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    ),
                     onClick = {
                         // Handle Sign In From Facebook
                     },
@@ -132,25 +143,29 @@ fun LoginScreen() {
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {
                         Icon(
-                            painter = painterResource(id = R.drawable.facebook2),
+                            painter = painterResource(id = R.drawable.facebook),
                             contentDescription = "Facebook",
+                            tint = Color.Unspecified,
                         )
                         Text(
                             text = "Facebook",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.White
                         )
                     }
                 }
-                Spacer(modifier = Modifier.width(16.dp)) // Added gap between buttons
+                Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     modifier = Modifier
                         .height(55.dp)
-                        .weight(1f),
+                        .weight(1f)
+
+                    ,
                     onClick = {
                         // Handle Sign In From Google
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
+                        containerColor = Color.Red.copy(alpha = 0.8f),
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         disabledContentColor = Color.Gray,
                         disabledContainerColor = MaterialTheme.colorScheme.onTertiaryContainer
@@ -160,12 +175,13 @@ fun LoginScreen() {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {
                         Icon(
                             painter = painterResource(id = R.drawable.google),
-                            contentDescription = "Google"
+                            contentDescription = "Google",
+                            tint = Color.Unspecified
                         )
                         Text(
                             text = "Google",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = Color.White
                         )
                     }
                 }
@@ -183,7 +199,7 @@ fun LoginScreen() {
                 modifier = Modifier
                     .padding(start = 4.dp)
                     .clickable {
-                        // Handle sign up action
+                        navController.navigate(NavSignUpScreen)
                     }
             )
         }
