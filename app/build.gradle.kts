@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.coil.compose)
     //material icons
     implementation ("androidx.compose.material:material-icons-extended:1.7.2")
+    implementation ("com.github.commandiron:ComposeLoading:1.0.4")
 
 
 }
