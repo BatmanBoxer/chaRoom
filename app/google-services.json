@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "424505871085",
+    "project_id": "cha-app-98dfe",
+    "storage_bucket": "cha-app-98dfe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:424505871085:android:c2b4f28cd796eaf8059ae4",
+        "android_client_info": {
+          "package_name": "com.batman.charoom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZ6fwTifoc3PRcjq2DOBT4srng6Zef_cI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

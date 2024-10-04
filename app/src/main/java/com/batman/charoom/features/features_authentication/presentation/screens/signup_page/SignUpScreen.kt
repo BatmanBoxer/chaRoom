@@ -36,14 +36,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.batman.charoom.R
+import com.batman.charoom.features.features_authentication.presentation.screens.SignUpViewModel
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
 import com.batman.charoom.navigation.NavLogInScreen
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SignUpScreen(navController: NavController){
+fun SignUpScreen(
+    navController: NavController,
+    signUpViewModel: SignUpViewModel = hiltViewModel(),
+                 ){
     var agreeToTerms by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
@@ -111,7 +116,7 @@ fun SignUpScreen(navController: NavController){
                     .fillMaxWidth(0.8f)
                     .height(55.dp),
                 onClick = {
-                    // Handle Sign In
+
                 },
                 shape = RoundedCornerShape(15.dp)
             ) {
