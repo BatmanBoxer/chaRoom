@@ -45,7 +45,7 @@ fun InputField(icon:ImageVector,placeholder:String,onChange:(String)->Unit){
             )
             .shadow(2.dp, RoundedCornerShape(15.dp))
         ,
-        placeholder = { Text("Type a message...", color = MaterialTheme.colorScheme.inverseSurface) },
+        placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.7f)) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
@@ -57,6 +57,7 @@ fun InputField(icon:ImageVector,placeholder:String,onChange:(String)->Unit){
                 tint = MaterialTheme.colorScheme.primary
             )
         },
+        singleLine = true,
     )
 
 }
