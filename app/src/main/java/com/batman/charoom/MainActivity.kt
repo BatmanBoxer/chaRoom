@@ -13,8 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.features.features_authentication.presentation.screens.login_page.LoginScreen
-import com.batman.charoom.features.features_authentication.presentation.screens.login_page.LoginScreenTopAppBar
 import com.batman.charoom.navigation.NavLogInScreen
 import com.batman.charoom.ui.theme.ChaRoomTheme
 
@@ -30,7 +30,9 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         when{
-                            currentDestination?.route?.contains("NavLogInScreen") == true -> LoginScreenTopAppBar()
+                            currentDestination?.route?.contains("NavLogInScreen") == true ->{
+                                ChaRoomTopAppBar(topBarTitle = "Login", onNavigateBack = { /*TODO*/ })
+                            }
                         }
                     }
                 ) {innerPadding->
