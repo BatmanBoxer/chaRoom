@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization") version "1.9.10"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
+    implementation(libs.firebase.auth.ktx)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -72,7 +74,7 @@ dependencies {
     //dagger hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation (libs.androidx.hilt.navigation.compose)
     //room
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
@@ -90,11 +92,7 @@ dependencies {
     //Coil
     implementation(libs.coil.compose)
     //material icons
-    implementation("androidx.compose.material:material-icons-extended:1.7.2")
-    //loading wheel
-    implementation ("com.github.commandiron:ComposeLoading:1.0.4")
-    //lifecycle compose
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.2")
 
 
 }
