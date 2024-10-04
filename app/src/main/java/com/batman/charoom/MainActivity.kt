@@ -15,7 +15,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.features.features_authentication.presentation.screens.login_page.LoginScreen
+import com.batman.charoom.features.features_authentication.presentation.screens.login_page.LoginScreenRoute
 import com.batman.charoom.features.features_authentication.presentation.screens.signup_page.SignUpScreen
+import com.batman.charoom.features.features_authentication.presentation.screens.signup_page.SignUpScreenRoute
+import com.batman.charoom.features.home.HomeUi
+import com.batman.charoom.navigation.HomeScreen
 import com.batman.charoom.navigation.NavLogInScreen
 import com.batman.charoom.navigation.NavSignUpScreen
 import com.batman.charoom.ui.theme.ChaRoomTheme
@@ -33,29 +37,37 @@ class MainActivity : ComponentActivity() {
                 val currentDestination = navBackStackEntry?.destination
                 Scaffold(
                     topBar = {
-                        when{
-                            currentDestination?.route?.contains("NavLogInScreen") == true ->{
-                                ChaRoomTopAppBar(topBarTitle = "Login", onNavigateBack = { /*TODO*/ })
+                        when {
+                            currentDestination?.route?.contains("NavLogInScreen") == true -> {
+                                ChaRoomTopAppBar(
+                                    topBarTitle = "Login",
+                                    onNavigateBack = { /*TODO*/ })
                             }
                         }
                     }
-                ) {innerPadding->
+                ) { innerPadding ->
                     NavHost(
                         navController = navController,
                         enterTransition = { EnterTransition.None },
                         startDestination = NavLogInScreen,
                         modifier = Modifier.padding(innerPadding)
-                    ){
+                    ) {
                         composable<NavLogInScreen> {
-                           LoginScreen(navController)
-                        }
-                        composable<NavSignUpScreen> {
-                            SignUpScreen(navController)
+                            LoginScreenRoute(
+                                navigateToHomeScreen = { navController.navigate(HomeScreen) },
+                                navigateToSignupScreen = { navController.navigate(NavSignUpScreen) }
+                            )
+                            composable<NavSignUpScreen> {
+                                SignUpScreenRoute(
+                                    navigateToLoginScreen = { navController.navigate(NavLogInScreen) }
+                                )
+                            }
+                            composable<HomeScreen> {
+                                HomeUi()
+                            }
                         }
                     }
-
                 }
-
             }
         }
     }

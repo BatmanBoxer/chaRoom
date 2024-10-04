@@ -72,7 +72,7 @@ dependencies {
     //dagger hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    implementation (libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     //room
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
@@ -90,7 +90,11 @@ dependencies {
     //Coil
     implementation(libs.coil.compose)
     //material icons
-    implementation ("androidx.compose.material:material-icons-extended:1.7.2")
+    implementation("androidx.compose.material:material-icons-extended:1.7.2")
+    //loading wheel
+    implementation ("com.github.commandiron:ComposeLoading:1.0.4")
+    //lifecycle compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
 
 }

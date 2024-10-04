@@ -1,5 +1,6 @@
 package com.batman.charoom.features.features_authentication.presentation.screens.signup_page
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,16 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,19 +30,76 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.batman.charoom.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.batman.charoom.common.component.ChaRoomLoadingWheel
+import com.batman.charoom.common.dataClass.SignUpData
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
 import com.batman.charoom.navigation.NavLogInScreen
 
+@Composable
+fun SignUpScreenRoute(
+    modifier: Modifier = Modifier,
+    viewmodel: SignupViewmodel = hiltViewModel(),
+    navigateToLoginScreen: () -> Unit
+) {
+    val uiState by viewmodel.signupUiState.collectAsStateWithLifecycle()
+
+    SignUpScreen(
+        uiState = uiState,
+        navigateToLoginScreen = navigateToLoginScreen,
+        signUp = viewmodel::signup
+    )
+}
+
+@Composable
+fun SignUpScreen(
+    uiState: SignupUiState,
+    navigateToLoginScreen: () -> Unit,
+    signUp: (SignUpData) -> Unit
+) {
+    val context = LocalContext.current
+
+    Box {
+        SignUpScreen(
+            navigateToLoginScreen = navigateToLoginScreen,
+            signUp = signUp
+        )
+
+        when (uiState) {
+            SignupUiState.Initial -> Unit
+
+            is SignupUiState.ShowErrorToast -> {
+                Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
+            }
+
+            SignupUiState.ShowProgress -> {
+                ChaRoomLoadingWheel()
+            }
+
+            SignupUiState.Success -> {
+                Toast.makeText(
+                    context,
+                    "Account created successfully. Please login",
+                    Toast.LENGTH_SHORT
+                ).show()
+                navigateToLoginScreen()
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SignUpScreen(navController: NavController){
+fun SignUpScreen(
+    navigateToLoginScreen: () -> Unit,
+    signUp: (SignUpData) -> Unit
+) {
     var agreeToTerms by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +140,10 @@ fun SignUpScreen(navController: NavController){
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 10.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 10.dp)
+                ) {
                     Checkbox(
                         checked = agreeToTerms,
                         onCheckedChange = { agreeToTerms = it }
@@ -111,7 +169,14 @@ fun SignUpScreen(navController: NavController){
                     .fillMaxWidth(0.8f)
                     .height(55.dp),
                 onClick = {
-                    // Handle Sign In
+                    // add validation
+                    signUp(
+                        SignUpData(
+                            name = "",
+                            email = "",
+                            password = "",
+                        )
+                    )
                 },
                 shape = RoundedCornerShape(15.dp)
             ) {
@@ -120,7 +185,6 @@ fun SignUpScreen(navController: NavController){
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
 
 
         }
@@ -136,7 +200,7 @@ fun SignUpScreen(navController: NavController){
                 modifier = Modifier
                     .padding(start = 4.dp)
                     .clickable {
-                        navController.navigate(NavLogInScreen)
+                        navigateToLoginScreen()
                     }
             )
         }
