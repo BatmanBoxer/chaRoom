@@ -89,5 +89,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     //Coil
     implementation(libs.coil.compose)
+    //material icons
+    implementation ("androidx.compose.material:material-icons-extended:1.7.2")
+
 
 }
