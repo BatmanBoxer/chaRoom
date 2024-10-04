@@ -9,4 +9,7 @@ object NavLogInScreen
 object NavSignUpScreen
 
 @Serializable
-object HomeScreen
+object NavHomeScreen
+
+@Serializable
+object NavTest
