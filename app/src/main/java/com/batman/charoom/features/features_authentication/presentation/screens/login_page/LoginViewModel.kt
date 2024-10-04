@@ -27,7 +27,7 @@ class LoginViewModel @Inject constructor(
             /**
              * for testing purpose
              */
-            delay(5000)
+            delay(1000)
             _loginUiState.value = LoginUiState.Success
         }
     }

@@ -90,7 +90,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     //Coil
-    implementation(libs.coil.compose)
+    implementation("io.coil-kt:coil-compose:2.7.0")
     //material icons
     implementation ("androidx.compose.material:material-icons-extended:1.7.2")
     implementation ("com.github.commandiron:ComposeLoading:1.0.4")

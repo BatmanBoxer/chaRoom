@@ -27,7 +27,7 @@ class SignupViewmodel @Inject constructor(
             /**
              * for testing purpose
              */
-            delay(5000)
+            delay(1000)
             _signupUiState.value = SignupUiState.Success
         }
     }
