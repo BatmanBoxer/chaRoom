@@ -23,7 +23,8 @@ import com.batman.charoom.features.feature_chat_screen.domain.model.Chat
 
 @Composable
 fun ChatUiScreenRoute(
-    viewModel: ChatScreenViewModel = hiltViewModel()
+    viewModel: ChatScreenViewModel = hiltViewModel(),
+    navigateToHomeScreen: () -> Unit
 ){
     val uiState by viewModel.chatUiState.collectAsStateWithLifecycle()
     when(uiState){
