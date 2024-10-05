@@ -29,9 +29,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batman.charoom.R
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
+import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
 
 @Composable
@@ -100,11 +103,15 @@ fun LoginScreen(
                 LoginUiState.ShowProgress -> ChaRoomLoadingWheel()
 
                 is LoginUiState.ShowValidationErrorString -> {
-                    Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
+                    LaunchedEffect(Unit) {
+                        Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 LoginUiState.Success -> {
-                    navigateToHomeScreen()
+                    LaunchedEffect(Unit) {
+                        navigateToHomeScreen()
+                    }
                 }
             }
         }
@@ -182,7 +189,7 @@ fun LoginScreenContent(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(55.dp),
-                onClick = { onLoginClick("email", "password") },
+                onClick = { onLoginClick("email", "123456") },
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Text(

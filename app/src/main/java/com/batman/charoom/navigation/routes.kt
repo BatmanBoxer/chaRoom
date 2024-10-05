@@ -13,3 +13,8 @@ object NavHomeScreen
 
 @Serializable
 object NavTest
+
+@Serializable
+data class NavChatScreen(
+    val chatID:String = "batman"
+)

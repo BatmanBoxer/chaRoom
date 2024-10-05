@@ -23,11 +23,9 @@ class HomeViewmodel @Inject constructor(
     val homeUiState: StateFlow<HomeUiState> = _homeUiState
 
     init {
-        Log.d("fetchdata","fetching")
         fetchData()
     }
-    fun fetchData() {
-
+    private fun fetchData() {
         viewModelScope.launch {
             _homeUiState.value = HomeUiState.Loading
             delay(1000)

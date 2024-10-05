@@ -38,7 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
 import com.batman.charoom.common.component.ChaRoomTopAppBar
-import com.batman.charoom.common.dataClass.SignUpData
+import com.batman.charoom.features.features_authentication.domain.model.SignUpData
+
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
 import com.batman.charoom.navigation.NavLogInScreen
 
