@@ -12,4 +12,5 @@ sealed class LoginUiState {
     data class ShowValidationErrorString(val error: String) : LoginUiState()
 
     data object Success : LoginUiState()
+
 }

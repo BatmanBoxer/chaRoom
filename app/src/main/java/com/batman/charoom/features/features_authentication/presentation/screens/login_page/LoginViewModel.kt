@@ -2,10 +2,16 @@ package com.batman.charoom.features.features_authentication.presentation.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.network.HttpException
+import com.batman.charoom.common.utils.Resource
+import com.batman.charoom.features.features_authentication.domain.repository.AuthRepository
+import com.batman.charoom.features.features_authentication.domain.usecase.UseCaseLogIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,21 +20,27 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-
+    private val useCaseLogIn: UseCaseLogIn
 ) : ViewModel() {
 
     private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.Initial)
     val loginUiState: StateFlow<LoginUiState> = _loginUiState
 
-    fun login(username: String, password: String) {
-        _loginUiState.value = LoginUiState.ShowProgress
+    fun login(email: String, password: String) {
+        useCaseLogIn(email,password).onEach { result->
+            when(result) {
+                is Resource.Error -> {
+                    _loginUiState.value = LoginUiState.ShowValidationErrorString(result.message ?: "Unknown error")
+                }
+                is Resource.Loading -> {
+                    _loginUiState.value = LoginUiState.ShowProgress
+                }
+                is Resource.Success -> {
+                    _loginUiState.value = LoginUiState.Success
+                }
+            }
 
-        viewModelScope.launch {
-            /**
-             * for testing purpose
-             */
-            delay(5000)
-            _loginUiState.value = LoginUiState.Success
-        }
+        }.launchIn(viewModelScope)
+
     }
 }
