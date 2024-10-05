@@ -7,8 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -30,44 +32,37 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ChaRoomTheme {
-                val navController = rememberNavController()
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                Scaffold(
-                    topBar = {
-                        when {
-                            currentDestination?.route?.contains("NavLogInScreen") == true -> {
-                                ChaRoomTopAppBar(
-                                    topBarTitle = "Login",
-                                    onNavigateBack = { /*TODO*/ })
-                            }
-                        }
-                    }
-                ) { innerPadding ->
-                    NavHost(
-                        navController = navController,
-                        enterTransition = { EnterTransition.None },
-                        startDestination = NavLogInScreen,
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        composable<NavLogInScreen> {
-                            LoginScreenRoute(
-                                navigateToHomeScreen = { navController.navigate(NavHomeScreen) },
-                                navigateToSignupScreen = { navController.navigate(NavSignUpScreen) }
-                            )
-                        }
-                        composable<NavSignUpScreen> {
-                            SignUpScreenRoute(
-                                navigateToLoginScreen = { navController.navigate(NavLogInScreen) }
-                            )
-                        }
-                        composable<NavHomeScreen> {
-                            HomeUiScreenRoute()
-                        }
-                    }
-                }
+                ChaRoom()
             }
         }
     }
 }
 
+
+@Composable
+fun ChaRoom(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = NavLogInScreen,
+        enterTransition = { EnterTransition.None },
+    ) {
+        composable<NavLogInScreen> {
+            LoginScreenRoute(
+                navigateToHomeScreen = { navController.navigate(NavHomeScreen) },
+                navigateToSignupScreen = { navController.navigate(NavSignUpScreen) }
+            )
+        }
+
+        composable<NavSignUpScreen> {
+            SignUpScreenRoute(
+                navigateToLoginScreen = { navController.navigate(NavLogInScreen) }
+            )
+        }
+
+        composable<NavHomeScreen> {
+            HomeUiScreenRoute()
+        }
+    }
+}
