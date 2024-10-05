@@ -1,5 +1,7 @@
 package com.batman.charoom.features.features_authentication.presentation.screens.login_page
 
+import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
@@ -27,14 +29,18 @@ class LoginViewModel @Inject constructor(
     val loginUiState: StateFlow<LoginUiState> = _loginUiState
 
     fun login(email: String, password: String) {
-        useCaseLogIn(email,password).onEach { result->
-            when(result) {
+        Log.d("batman","login")
+        useCaseLogIn(email, password).onEach { result ->
+            when (result) {
                 is Resource.Error -> {
-                    _loginUiState.value = LoginUiState.ShowValidationErrorString(result.message ?: "Unknown error")
+                    _loginUiState.value =
+                        LoginUiState.ShowValidationErrorString(result.message ?: "Unknown error")
                 }
+
                 is Resource.Loading -> {
                     _loginUiState.value = LoginUiState.ShowProgress
                 }
+
                 is Resource.Success -> {
                     _loginUiState.value = LoginUiState.Success
                 }
@@ -43,4 +49,6 @@ class LoginViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.batman.charoom.common.dataClass
+package com.batman.charoom.features.feature_chat_screen.domain.model
 
 data class RecentChat(
     val name: String,

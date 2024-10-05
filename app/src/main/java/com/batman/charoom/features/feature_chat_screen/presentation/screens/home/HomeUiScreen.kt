@@ -1,6 +1,5 @@
-package com.batman.charoom.features.home
+package com.batman.charoom.features.feature_chat_screen.presentation.screens.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -29,7 +26,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,13 +42,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.compose.ImagePainter
-import coil.compose.rememberAsyncImagePainter
 import com.batman.charoom.R
 import com.batman.charoom.common.component.ChaRoomErrorScreen
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
-import com.batman.charoom.common.dataClass.RecentChat
+import com.batman.charoom.features.feature_chat_screen.domain.model.RecentChat
 import com.batman.charoom.common.objects.ChaRoomIcons
 
 /**
@@ -62,11 +55,7 @@ import com.batman.charoom.common.objects.ChaRoomIcons
 fun HomeUiScreenRoute(
     viewmodel: HomeViewmodel = hiltViewModel()
 ) {
-    val uiState by viewmodel.homeUiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(key1 = Unit) {
-        viewmodel.fetchData()
-    }
+    val uiState by  viewmodel.homeUiState.collectAsStateWithLifecycle()
 
     HomeUiScreen(
         uiState = uiState
@@ -234,30 +223,30 @@ fun ImageItem(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    Image(
-        painter = painterResource(id = R.drawable.empty_placeholder), contentDescription = "",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .size(56.dp)
-            .clip(CircleShape)
-            .background(Color.Gray)
-    )
-
-    /**
-     * currently AsyncImage is taking too much time to load images + freezes, we have to fix that.
-     */
-//    AsyncImage(
-//        model = imageUrl,
-//        contentDescription = null,
-//        placeholder = painterResource(id = R.drawable.empty_placeholder),
-//        fallback = painterResource(id = R.drawable.empty_placeholder),
-//        error = painterResource(id = R.drawable.error),
+//    Image(
+//        painter = painterResource(id = R.drawable.empty_placeholder), contentDescription = "",
 //        contentScale = ContentScale.Crop,
 //        modifier = modifier
 //            .size(56.dp)
 //            .clip(CircleShape)
 //            .background(Color.Gray)
 //    )
+
+    /**
+     * currently AsyncImage is taking too much time to load images + freezes, we have to fix that.
+     */
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = null,
+        placeholder = painterResource(id = R.drawable.empty_placeholder),
+        fallback = painterResource(id = R.drawable.empty_placeholder),
+        error = painterResource(id = R.drawable.error),
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .size(56.dp)
+            .clip(CircleShape)
+            .background(Color.Gray)
+    )
 }
 
 @Preview(showBackground = true)

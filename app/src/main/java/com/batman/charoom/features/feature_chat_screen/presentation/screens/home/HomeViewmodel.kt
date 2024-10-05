@@ -1,11 +1,9 @@
-package com.batman.charoom.features.home
+package com.batman.charoom.features.feature_chat_screen.presentation.screens.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batman.charoom.R
-import com.batman.charoom.common.dataClass.RecentChat
-import com.batman.charoom.common.dataClass.UserData
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Constructor
+import com.batman.charoom.features.feature_chat_screen.domain.model.RecentChat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,16 +19,20 @@ class HomeViewmodel @Inject constructor(
 
 ) : ViewModel() {
 
-    private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Success(sampleChats))
+    private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val homeUiState: StateFlow<HomeUiState> = _homeUiState
 
+    init {
+        Log.d("fetchdata","fetching")
+        fetchData()
+    }
     fun fetchData() {
-        _homeUiState.value = HomeUiState.Loading
 
         viewModelScope.launch {
+            _homeUiState.value = HomeUiState.Loading
+            delay(1000)
             _homeUiState.value = HomeUiState.Success(sampleChats)
-            delay(10000)
-            _homeUiState.value = HomeUiState.Error("This is a test failure check")
+
         }
     }
 }

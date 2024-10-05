@@ -1,6 +1,6 @@
-package com.batman.charoom.features.home
+package com.batman.charoom.features.feature_chat_screen.presentation.screens.home
 
-import com.batman.charoom.common.dataClass.RecentChat
+import com.batman.charoom.features.feature_chat_screen.domain.model.RecentChat
 
 /**
  * Created by Pronay Sarker on 04/10/2024 (11:48 PM)

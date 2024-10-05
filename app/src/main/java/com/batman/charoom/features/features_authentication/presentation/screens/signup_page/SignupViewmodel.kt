@@ -2,7 +2,7 @@ package com.batman.charoom.features.features_authentication.presentation.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.batman.charoom.common.dataClass.SignUpData
+import com.batman.charoom.features.features_authentication.domain.model.SignUpData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

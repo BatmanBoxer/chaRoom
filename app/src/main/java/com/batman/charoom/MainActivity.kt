@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.features.features_authentication.presentation.screens.login_page.LoginScreenRoute
 import com.batman.charoom.features.features_authentication.presentation.screens.signup_page.SignUpScreenRoute
-import com.batman.charoom.features.home.HomeUiScreenRoute
+import com.batman.charoom.features.feature_chat_screen.presentation.screens.home.HomeUiScreenRoute
 import com.batman.charoom.navigation.NavHomeScreen
 import com.batman.charoom.navigation.NavLogInScreen
 import com.batman.charoom.navigation.NavSignUpScreen

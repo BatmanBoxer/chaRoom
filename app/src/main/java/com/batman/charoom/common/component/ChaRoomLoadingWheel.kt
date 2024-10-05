@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.commandiron.compose_loading.ChasingTwoDots
 import com.commandiron.compose_loading.DoubleBounce
 
@@ -18,10 +19,11 @@ fun ChaRoomLoadingWheel(modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surface)
+            .background(color = Color.Transparent)
     ) {
         DoubleBounce(
             modifier = Modifier.align(Alignment.Center)
         )
     }
 }
+
