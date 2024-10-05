@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
+import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.common.dataClass.SignUpData
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
 import com.batman.charoom.navigation.NavLogInScreen
@@ -63,30 +65,33 @@ fun SignUpScreen(
 ) {
     val context = LocalContext.current
 
-    Box {
-        SignUpScreen(
-            navigateToLoginScreen = navigateToLoginScreen,
-            signUp = signUp
-        )
+    Scaffold(
+        topBar = {
+            ChaRoomTopAppBar(topBarTitle = "SignUp", onNavigateBack = { navigateToLoginScreen() })
+        }
+    ) {
+        Box(modifier = Modifier.padding(it)) {
 
-        when (uiState) {
-            SignupUiState.Initial -> Unit
+            SignUpScreen(
+                navigateToLoginScreen = navigateToLoginScreen,
+                signUp = signUp
+            )
 
-            is SignupUiState.ShowErrorToast -> {
-                Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
-            }
+            when (uiState) {
+                SignupUiState.Initial -> Unit
 
-            SignupUiState.ShowProgress -> {
-                ChaRoomLoadingWheel()
-            }
+                is SignupUiState.ShowErrorToast -> {
+                    Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
+                }
 
-            SignupUiState.Success -> {
-                Toast.makeText(
-                    context,
-                    "Account created successfully. Please login",
-                    Toast.LENGTH_SHORT
-                ).show()
-                navigateToLoginScreen()
+                SignupUiState.ShowProgress -> {
+                    ChaRoomLoadingWheel()
+                }
+
+                SignupUiState.Success -> {
+                    Toast.makeText(context, "Account created successfully. Please login", Toast.LENGTH_SHORT).show()
+                    navigateToLoginScreen()
+                }
             }
         }
     }

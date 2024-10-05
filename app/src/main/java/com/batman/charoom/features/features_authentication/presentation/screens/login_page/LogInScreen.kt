@@ -1,5 +1,6 @@
 package com.batman.charoom.features.features_authentication.presentation.screens.login_page
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,17 +17,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batman.charoom.R
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
+import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
 
 @Composable
@@ -66,26 +73,44 @@ fun LoginScreen(
     onLoginClick: (email: String, password: String) -> Unit
 ) {
     val context = LocalContext.current
+    var showExitAppDialog by rememberSaveable { mutableStateOf(false) }
+    val activity = LocalContext.current as? Activity
 
-    Box {
-        LoginScreenContent(
-            navigateToSignupScreen = navigateToSignupScreen,
-            onLoginClick = onLoginClick
-        )
-
-        when (uiState) {
-            LoginUiState.Initial -> Unit
-
-            LoginUiState.ShowProgress -> ChaRoomLoadingWheel()
-
-            is LoginUiState.ShowValidationErrorString -> {
-                Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
-            }
-
-            LoginUiState.Success -> {
-                navigateToHomeScreen()
+    if(showExitAppDialog){
+        ExitAppDialog { userChoise ->
+            if(userChoise){
+                activity?.finish()
+            } else{
+                showExitAppDialog = false
             }
         }
+    }
+
+    Scaffold(
+        topBar = {
+            ChaRoomTopAppBar(topBarTitle = "Login", onNavigateBack = { showExitAppDialog = true })
+        }
+    ) {
+        Box(modifier = Modifier.padding(it)) {
+            LoginScreenContent(
+                navigateToSignupScreen = navigateToSignupScreen, onLoginClick = onLoginClick
+            )
+
+            when (uiState) {
+                LoginUiState.Initial -> Unit
+
+                LoginUiState.ShowProgress -> ChaRoomLoadingWheel()
+
+                is LoginUiState.ShowValidationErrorString -> {
+                    Toast.makeText(context, uiState.error, Toast.LENGTH_SHORT).show()
+                }
+
+                LoginUiState.Success -> {
+                    navigateToHomeScreen()
+                }
+            }
+        }
+
     }
 }
 
@@ -134,24 +159,20 @@ fun LoginScreenContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = rememberPassword,
-                        onCheckedChange = { rememberPassword = it }
-                    )
+                    Checkbox(checked = rememberPassword,
+                        onCheckedChange = { rememberPassword = it })
                     Text(
                         text = "Remember me",
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-                Text(
-                    text = "Forgot Password?",
+                Text(text = "Forgot Password?",
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.clickable {
                         // Handle forgot password action
-                    }
-                )
+                    })
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -163,18 +184,15 @@ fun LoginScreenContent(
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Text(
-                    text = "Sign In",
-                    style = MaterialTheme.typography.bodyLarge
+                    text = "Sign In", style = MaterialTheme.typography.bodyLarge
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Or",
-                style = MaterialTheme.typography.labelLarge
+                text = "Or", style = MaterialTheme.typography.labelLarge
             )
             Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.padding(10.dp)
+                horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.padding(10.dp)
             ) {
                 Button(
                     modifier = Modifier
@@ -208,17 +226,14 @@ fun LoginScreenContent(
                 Button(
                     modifier = Modifier
                         .height(55.dp)
-                        .weight(1f),
-                    onClick = {
+                        .weight(1f), onClick = {
                         // Handle Sign In From Google
-                    },
-                    colors = ButtonDefaults.buttonColors(
+                    }, colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red.copy(alpha = 0.8f),
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         disabledContentColor = Color.Gray,
                         disabledContainerColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    ),
-                    shape = RoundedCornerShape(15.dp)
+                    ), shape = RoundedCornerShape(15.dp)
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {
                         Icon(
@@ -241,13 +256,33 @@ fun LoginScreenContent(
                 .padding(20.dp)
         ) {
             Text(text = "Don't Have an account?")
-            Text(
-                text = "Sign Up",
+            Text(text = "Sign Up",
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .padding(start = 4.dp)
-                    .clickable { navigateToSignupScreen() }
-            )
+                    .clickable { navigateToSignupScreen() })
         }
     }
+}
+
+@Composable
+fun ExitAppDialog(
+    modifier: Modifier = Modifier,
+    userSelection: (Boolean) -> Unit
+) {
+    AlertDialog(
+        icon = { Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "exit app") },
+        text = { Text(text = "Are you sure you want to exit the app?") },
+        onDismissRequest = { userSelection(false) },
+        confirmButton = {
+            TextButton(onClick = { userSelection(true) }) {
+                Text(text = "Exit", color = MaterialTheme.colorScheme.error)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { userSelection(false) }) {
+                Text(text = "Cancel")
+            }
+        },
+    )
 }
