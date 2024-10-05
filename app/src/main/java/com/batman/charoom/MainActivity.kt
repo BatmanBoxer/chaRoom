@@ -41,7 +41,7 @@ fun ChaRoom(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = NavChatScreen(),
+        startDestination = NavChatScreen("batman"),
         enterTransition = { EnterTransition.None },
     ) {
         composable<NavLogInScreen> {

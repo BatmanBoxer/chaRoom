@@ -16,5 +16,5 @@ object NavTest
 
 @Serializable
 data class NavChatScreen(
-    val chatID:String = "batman"
+    val chatID:String
 )

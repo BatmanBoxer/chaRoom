@@ -6,7 +6,7 @@ sealed class ChatUiState {
     data object Loading : ChatUiState()
     data class Error(val e: String) : ChatUiState()
     data class Success(
-        val title:String,
+        val title: String,
         val chats: List<Chat>
     ) : ChatUiState()
 }
