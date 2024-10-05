@@ -1,4 +1,4 @@
-package com.batman.charoom.navigation
+package com.batman.charoom.rootNavigation
 
 import kotlinx.serialization.Serializable
 
@@ -12,7 +12,16 @@ object NavSignUpScreen
 object NavHomeScreen
 
 @Serializable
+object HomeRoute
+
+@Serializable
 object NavTest
+
+@Serializable
+object NavChatScreenRoure
+
+@Serializable
+object AuthNavRoute
 
 @Serializable
 data class NavChatScreen(

@@ -29,24 +29,25 @@ class LoginViewModel @Inject constructor(
     val loginUiState: StateFlow<LoginUiState> = _loginUiState
 
     fun login(email: String, password: String) {
-        Log.d("batman","login")
-        useCaseLogIn(email, password).onEach { result ->
-            when (result) {
-                is Resource.Error -> {
-                    _loginUiState.value =
-                        LoginUiState.ShowValidationErrorString(result.message ?: "Unknown error")
-                }
-
-                is Resource.Loading -> {
-                    _loginUiState.value = LoginUiState.ShowProgress
-                }
-
-                is Resource.Success -> {
-                    _loginUiState.value = LoginUiState.Success
-                }
-            }
-
-        }.launchIn(viewModelScope)
+        _loginUiState.value = LoginUiState.Success
+//        Log.d("batman","login")
+//        useCaseLogIn(email, password).onEach { result ->
+//            when (result) {
+//                is Resource.Error -> {
+//                    _loginUiState.value =
+//                        LoginUiState.ShowValidationErrorString(result.message ?: "Unknown error")
+//                }
+//
+//                is Resource.Loading -> {
+//                    _loginUiState.value = LoginUiState.ShowProgress
+//                }
+//
+//                is Resource.Success -> {
+//                    _loginUiState.value = LoginUiState.Success
+//                }
+//            }
+//
+//        }.launchIn(viewModelScope)
 
     }
 

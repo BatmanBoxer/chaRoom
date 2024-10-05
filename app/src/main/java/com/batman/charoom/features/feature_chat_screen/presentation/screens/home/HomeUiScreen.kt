@@ -53,7 +53,8 @@ import com.batman.charoom.common.objects.ChaRoomIcons
  */
 @Composable
 fun HomeUiScreenRoute(
-    viewmodel: HomeViewmodel = hiltViewModel()
+    viewmodel: HomeViewmodel = hiltViewModel(),
+    navigateToChatScreen : ( ) -> Unit
 ) {
     val uiState by  viewmodel.homeUiState.collectAsStateWithLifecycle()
 

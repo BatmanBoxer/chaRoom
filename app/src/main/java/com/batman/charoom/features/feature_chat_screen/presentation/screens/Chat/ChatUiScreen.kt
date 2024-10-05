@@ -17,7 +17,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun ChatUiScreenRoute(
-    viewModel: ChatScreenViewModel = hiltViewModel()
+    viewModel: ChatScreenViewModel = hiltViewModel(),
+    navigateToHomeScreen: () -> Unit
 ){
     val uiState by viewModel.chatUiState.collectAsStateWithLifecycle()
     ChatScreen(uiState)
