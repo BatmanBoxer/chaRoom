@@ -20,37 +20,20 @@ fun NavGraphBuilder.authNavRoute(
     navigation<NavAuthRoute>(
         startDestination = NavLogInScreen
     ) {
-        loginScreen(
-            navigateToSignupScreen = navController::navigateToSignUpScreen,
-            navigateToHomeScreen = navigateToHomeScreen
-        )
-        signupScreen(
-            navigateBack = navController::popBackStack
-        )
-    }
-}
-
-private fun NavGraphBuilder.loginScreen(
-    navigateToHomeScreen: () -> Unit,
-    navigateToSignupScreen: () -> Unit
-) {
-    composable<NavLogInScreen>() {
-        LoginScreenRoute(
-            navigateToHomeScreen = navigateToHomeScreen,
-            navigateToSignupScreen = navigateToSignupScreen
-        )
-    }
-}
-
-private fun NavGraphBuilder.signupScreen(
-    navigateBack: () -> Unit
-) {
-    composable<NavSignUpScreen>() {
-        SignUpScreenRoute {
-            navigateBack()
+        composable<NavLogInScreen>() {
+            LoginScreenRoute(
+                navigateToHomeScreen = navigateToHomeScreen,
+                navigateToSignupScreen = navController::navigateToSignUpScreen
+            )
+        }
+        composable<NavSignUpScreen>() {
+            SignUpScreenRoute (
+                navigateToLoginScreen = navController::popBackStack
+            )
         }
     }
 }
+
 
 fun NavController.navigateToSignUpScreen() {
     navigate(NavSignUpScreen)
