@@ -18,12 +18,10 @@ object HomeRoute
 object NavTest
 
 @Serializable
-object NavChatScreenRoure
+object NavChatScreenRoute
 
 @Serializable
-object AuthNavRoute
+object NavAuthRoute
 
 @Serializable
-data class NavChatScreen(
-    val chatID:String
-)
+object NavChatScreen

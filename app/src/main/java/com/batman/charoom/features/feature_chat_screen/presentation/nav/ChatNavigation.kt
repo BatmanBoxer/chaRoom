@@ -6,8 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.batman.charoom.features.feature_chat_screen.presentation.screens.Chat.ChatUiScreenRoute
 import com.batman.charoom.features.feature_chat_screen.presentation.screens.home.HomeUiScreenRoute
-import com.batman.charoom.rootNavigation.HomeRoute
-import com.batman.charoom.rootNavigation.NavChatScreenRoure
+import com.batman.charoom.rootNavigation.NavChatScreen
+import com.batman.charoom.rootNavigation.NavChatScreenRoute
 import com.batman.charoom.rootNavigation.NavHomeScreen
 
 /**
@@ -16,9 +16,8 @@ import com.batman.charoom.rootNavigation.NavHomeScreen
 fun NavGraphBuilder.chatScreenRoute(
     navController: NavController
 ) {
-    navigation(
-        startDestination = NavChatScreenRoure.toString(),
-        route = "route"
+    navigation<NavChatScreenRoute>(
+        startDestination = NavChatScreen,
     ) {
         homeScreen(navigateToChatScreen = navController::navigateToChatScreen)
 
@@ -29,7 +28,7 @@ fun NavGraphBuilder.chatScreenRoute(
 private fun NavGraphBuilder.homeScreen(
     navigateToChatScreen: () -> Unit
 ) {
-    composable(route = NavHomeScreen.toString()) {
+    composable<NavHomeScreen>() {
         HomeUiScreenRoute(
             navigateToChatScreen = navigateToChatScreen
         )
@@ -39,7 +38,7 @@ private fun NavGraphBuilder.homeScreen(
 private fun NavGraphBuilder.chatScreen(
     navigateToHomeScreen: () -> Unit
 ) {
-    composable(route = NavChatScreenRoure.toString()) {
+    composable<NavChatScreen>() {
         ChatUiScreenRoute(
             navigateToHomeScreen = navigateToHomeScreen
         )
@@ -47,9 +46,9 @@ private fun NavGraphBuilder.chatScreen(
 }
 
 fun NavController.navigateToHomeScreen() {
-    navigate(NavHomeScreen.toString())
+    navigate(NavHomeScreen)
 }
 
 fun NavController.navigateToChatScreen() {
-    navigate(NavChatScreenRoure.toString())
+    navigate(NavChatScreen)
 }

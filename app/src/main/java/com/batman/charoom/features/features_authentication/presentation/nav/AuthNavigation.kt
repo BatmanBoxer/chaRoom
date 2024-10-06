@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.batman.charoom.features.features_authentication.presentation.screens.login_page.LoginScreenRoute
 import com.batman.charoom.features.features_authentication.presentation.screens.signup_page.SignUpScreenRoute
-import com.batman.charoom.rootNavigation.AuthNavRoute
+import com.batman.charoom.rootNavigation.NavAuthRoute
 import com.batman.charoom.rootNavigation.NavLogInScreen
 import com.batman.charoom.rootNavigation.NavSignUpScreen
 
@@ -17,9 +17,8 @@ fun NavGraphBuilder.authNavRoute(
     navController: NavController,
     navigateToHomeScreen: () -> Unit
 ) {
-    navigation(
-        startDestination = NavLogInScreen.toString(),
-        route = AuthNavRoute.toString()
+    navigation<NavAuthRoute>(
+        startDestination = NavLogInScreen
     ) {
         loginScreen(
             navigateToSignupScreen = navController::navigateToSignUpScreen,
@@ -35,12 +34,7 @@ private fun NavGraphBuilder.loginScreen(
     navigateToHomeScreen: () -> Unit,
     navigateToSignupScreen: () -> Unit
 ) {
-    composable(
-        route = NavLogInScreen.toString(),
-        arguments = listOf(
-
-        )
-    ) {
+    composable<NavLogInScreen>() {
         LoginScreenRoute(
             navigateToHomeScreen = navigateToHomeScreen,
             navigateToSignupScreen = navigateToSignupScreen
@@ -51,12 +45,7 @@ private fun NavGraphBuilder.loginScreen(
 private fun NavGraphBuilder.signupScreen(
     navigateBack: () -> Unit
 ) {
-    composable(
-        route = NavSignUpScreen.toString(),
-        arguments = listOf(
-
-        )
-    ) {
+    composable<NavSignUpScreen>() {
         SignUpScreenRoute {
             navigateBack()
         }
@@ -64,5 +53,5 @@ private fun NavGraphBuilder.signupScreen(
 }
 
 fun NavController.navigateToSignUpScreen() {
-    navigate(NavSignUpScreen.toString())
+    navigate(NavSignUpScreen)
 }
