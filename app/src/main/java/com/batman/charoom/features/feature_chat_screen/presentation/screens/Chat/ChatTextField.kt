@@ -1,6 +1,8 @@
 package com.batman.charoom.features.feature_chat_screen.presentation.screens.Chat
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,74 +41,73 @@ import androidx.compose.ui.unit.dp
 fun ChatTextField(
     modifier: Modifier,
     onSend: (String) -> Unit,
-    onClickPhoto:()->Unit
+    onClickPhoto: () -> Unit
 ) {
     var message by remember { mutableStateOf("") }
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp)
-                .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colorScheme.inverseOnSurface),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-                TextField(
-                    value = message,
-                    onValueChange = { message = it },
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .weight(1f),
-                    placeholder = { Text("Type your message...") },
-                    maxLines = 3,
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent
-                    ),
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp)
+            .clip(RoundedCornerShape(25.dp))
+            .background(MaterialTheme.colorScheme.inverseOnSurface),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextField(
+            value = message,
+            onValueChange = { message = it },
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .weight(1f),
+            placeholder = { Text("Type your message...") },
+            maxLines = 3,
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent
+            ),
+        )
+
+        if (message == "") {
+            IconButton(
+                onClick = {
+                    onClickPhoto()
+                },
+                modifier = Modifier
+                    .size(48.dp)
+                    .offset((-5).dp)
+                    .background(Color(0xFFCC5252), shape = CircleShape)
+
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Image,
+                    contentDescription = "Send Message",
+                    tint = Color.White
                 )
-
-            if (message == "") {
-                IconButton(
-                    onClick = {
-                        if (message.isNotBlank()) {
-                            onSend(message)
-                            message = ""
-                        }
-                    },
-                    modifier = Modifier
-                        .size(48.dp)
-                        .offset((-5).dp)
-                        .background(Color(0xFFCC5252), shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Image,
-                        contentDescription = "Send Message",
-                        tint = Color.White
-                    )
-                }
-            } else {
-                IconButton(
-                    onClick = {
-                        if (message.isNotBlank()) {
-                            onClickPhoto()
-                        }
-                    },
-                    modifier = Modifier
-                        .size(48.dp)
-                        .offset((-5).dp)
-                        .background(Color(0xFFCC5252), shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Send,
-                        contentDescription = "Send Message",
-                        tint = Color.White
-                    )
-                }
-
             }
+        } else {
+            IconButton(
+                onClick = {
+                    if (message.isNotBlank()) {
+                        onSend(message)
+                        message = ""
+                    }
+                },
+                modifier = Modifier
+                    .size(48.dp)
+                    .offset((-5).dp)
+                    .background(Color(0xFFCC5252), shape = CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Send,
+                    contentDescription = "Send Message",
+                    tint = Color.White
+                )
+            }
+
         }
+    }
 
 
 }
