@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.storage)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     implementation(libs.firebase.auth.ktx)
     androidTestImplementation(libs.androidx.junit)

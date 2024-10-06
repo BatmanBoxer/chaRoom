@@ -48,7 +48,7 @@ fun ChatTextField(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 4.dp)
-            .clip(RoundedCornerShape(25.dp))
+            .clip(RoundedCornerShape(15.dp))
             .background(MaterialTheme.colorScheme.inverseOnSurface),
         verticalAlignment = Alignment.CenterVertically
     ) {

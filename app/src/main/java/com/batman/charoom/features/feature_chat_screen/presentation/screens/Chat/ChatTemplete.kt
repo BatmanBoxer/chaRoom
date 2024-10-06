@@ -67,9 +67,9 @@ fun ChatTemplate(chat: Chat) {
             }
 
 
-            if (chat.img != null) {
+            if (chat.primaryImg != null) {
                 AsyncImage(
-                    model = chat.img,
+                    model = chat.primaryImg,
                     contentDescription = "chat image",
                     modifier = Modifier
                         .size(200.dp)

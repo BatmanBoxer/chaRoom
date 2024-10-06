@@ -4,6 +4,6 @@ data class Chat(
     val isUser:Boolean,
     val primaryContent:String?,
     val secondaryContent:String?,
-    val img:String?,
+    val primaryImg:String?,
     val secondaryImg:String?
 )
