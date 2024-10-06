@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,43 +26,51 @@ import com.batman.charoom.features.feature_chat_screen.domain.model.Chat
 fun ChatUiScreenRoute(
     viewModel: ChatScreenViewModel = hiltViewModel(),
     navigateToHomeScreen: () -> Unit
-){
+) {
     val uiState by viewModel.chatUiState.collectAsStateWithLifecycle()
-    when(uiState){
+    when (uiState) {
         is ChatUiState.Error -> {}
         ChatUiState.Loading -> {}
         is ChatUiState.Success -> {
             val successState = uiState as ChatUiState.Success
-            ChatScreen(successState.title,successState.chats)
+            ChatScreen(successState.title, successState.chats)
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(title:String,chats: List<Chat>){
+fun ChatScreen(title: String, chats: List<Chat>) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(title) }
             )
-        }
-    ) {innerPadding->
-            Box(modifier = Modifier.fillMaxSize().padding(innerPadding)){
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = 8.dp)
-                ) {
-                    items(chats) { chat ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            horizontalArrangement = if (chat.isUser) Arrangement.End else Arrangement.Start
-                        ) {
-                            ChatTemplate(chat = chat)
-                        }
+        },
+    ) { innerPadding ->
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                items(chats) { chat ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        horizontalArrangement = if (chat.isUser) Arrangement.End else Arrangement.Start
+                    ) {
+                        ChatTemplate(chat = chat)
                     }
                 }
             }
+            ChatTextField(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onSend = {},
+                onClickPhoto = {}
+            )
+        }
     }
 }
