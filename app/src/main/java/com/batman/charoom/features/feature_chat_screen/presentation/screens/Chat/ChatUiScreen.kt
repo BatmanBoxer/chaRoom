@@ -48,7 +48,9 @@ fun ChatScreen(title: String, chats: List<Chat>) {
     val listState = rememberLazyListState()
 
     LaunchedEffect(chats) {
-        listState.scrollToItem(chats.size - 1)
+        if (chats.size > 2 ){
+            listState.scrollToItem(chats.size - 1)
+        }
     }
 
     Scaffold(

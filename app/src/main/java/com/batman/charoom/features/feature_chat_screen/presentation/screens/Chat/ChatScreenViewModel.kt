@@ -1,8 +1,11 @@
 package com.batman.charoom.features.feature_chat_screen.presentation.screens.Chat
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.batman.charoom.features.feature_chat_screen.data.remote.dto.ChatDto
+import com.batman.charoom.features.feature_chat_screen.data.remote.dto.toChat
 import com.batman.charoom.features.feature_chat_screen.domain.model.Chat
 import com.batman.charoom.features.feature_chat_screen.domain.repository.ChatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,17 +29,19 @@ class ChatScreenViewModel @Inject constructor(
 
     init {
        viewModelScope.launch {
-           repository.getChats("chats"){}
+           repository.getChats("HMzlhOOiRmWeL7y2Q5u9"){
+
+           }
        }
-        fetchChat()
+        fetchChat("HMzlhOOiRmWeL7y2Q5u9")
     }
-    private fun fetchChat(){
+    private fun fetchChat(chatRoomId: String){
         _chatUiState.value = ChatUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            delay(2000)
-            withContext(Dispatchers.Main){
-                _chatUiState.value = ChatUiState.Success(chatId.toString(),sampleChats)
+            repository.getChats(chatRoomId){
+                    _chatUiState.value = ChatUiState.Success("batman", it.map { it.toChat() })
             }
+
         }
     }
     private fun addChat(chatRoomId:String,chat: Chat){

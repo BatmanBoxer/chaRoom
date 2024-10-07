@@ -15,7 +15,7 @@ fun RootNavGraph(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = NavAuthRoute,
+        startDestination = NavChatScreenRoute,
         enterTransition = { EnterTransition.None },
     ) {
         authNavRoute(
