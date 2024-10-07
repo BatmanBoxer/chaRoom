@@ -6,15 +6,17 @@ import com.batman.charoom.features.feature_chat_screen.domain.model.RoomInfoDto
 import com.batman.charoom.features.feature_chat_screen.domain.repository.ChatRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.lang.Error
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : ChatRepository {
-    override suspend fun getChats(chatId: String, onResult: (List<ChatDto>) -> Unit) {
-        firestore.collection("chats_rooms/jQWCJsECxehUAGrz7qa0/chats")
+    override suspend fun getChats(chatId: String, onResult: (List<ChatDto>) -> Unit, onError: (String) -> Unit) {
+        firestore.collection("chats_rooms/$chatId/chats")
             .addSnapshotListener { snapshots, exception ->
                 if (exception != null) {
+                    onError(exception.toString())
                     return@addSnapshotListener
                 }
                 if (snapshots != null) {
@@ -34,6 +36,8 @@ class ChatRepositoryImpl @Inject constructor(
         try {
             val chatRef = firestore.collection("chats_rooms/$roomId/chats")
             chatRef.add(chatDto).await()
+            Log.d("Firestore", "sucess adding chat")
+
         } catch (exception: Exception) {
             Log.e("Firestore", "Error adding chat", exception)
         }

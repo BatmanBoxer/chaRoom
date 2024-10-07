@@ -17,7 +17,7 @@ fun NavGraphBuilder.chatScreenRoute(
     navController: NavController
 ) {
     navigation<NavChatScreenRoute>(
-        startDestination = NavChatScreen,
+        startDestination = NavChatScreen(chatId = "HMzlhOOiRmWeL7y2Q5u9"),
     ) {
         homeScreen(navigateToChatScreen = navController::navigateToChatScreen)
 
@@ -26,7 +26,7 @@ fun NavGraphBuilder.chatScreenRoute(
 }
 
 private fun NavGraphBuilder.homeScreen(
-    navigateToChatScreen: () -> Unit
+    navigateToChatScreen: (String) -> Unit
 ) {
     composable<NavHomeScreen>() {
         HomeUiScreenRoute(
@@ -49,6 +49,6 @@ fun NavController.navigateToHomeScreen() {
     navigate(NavHomeScreen)
 }
 
-fun NavController.navigateToChatScreen() {
-    navigate(NavChatScreen)
+fun NavController.navigateToChatScreen(chaId:String) {
+    navigate(NavChatScreen(chatId = chaId))
 }

@@ -8,6 +8,8 @@ import com.batman.charoom.features.feature_chat_screen.data.remote.dto.ChatDto
 import com.batman.charoom.features.feature_chat_screen.data.remote.dto.toChat
 import com.batman.charoom.features.feature_chat_screen.domain.model.Chat
 import com.batman.charoom.features.feature_chat_screen.domain.repository.ChatRepository
+import com.batman.charoom.features.feature_chat_screen.domain.use_case.UseCaseAddChats
+import com.batman.charoom.features.feature_chat_screen.domain.use_case.UseCaseGetChats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -20,63 +22,35 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatScreenViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val repository: ChatRepository
-):ViewModel() {
+    private val useCaseGetChats: UseCaseGetChats,
+    private val useCaseAddChats: UseCaseAddChats,
+) : ViewModel() {
     private val _chatUiState = MutableStateFlow<ChatUiState>(ChatUiState.Loading)
     val chatUiState: StateFlow<ChatUiState> = _chatUiState
 
-     private val chatId: String? = savedStateHandle["chatID"]
+    private val roomId: String = savedStateHandle["chatId"] ?: ""
 
     init {
-       viewModelScope.launch {
-           repository.getChats("HMzlhOOiRmWeL7y2Q5u9"){
-
-           }
-       }
-        fetchChat("HMzlhOOiRmWeL7y2Q5u9")
+        fetchChat()
     }
-    private fun fetchChat(chatRoomId: String){
+
+    private fun fetchChat() {
         _chatUiState.value = ChatUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getChats(chatRoomId){
-                    _chatUiState.value = ChatUiState.Success("batman", it.map { it.toChat() })
-            }
+            useCaseGetChats(roomId, onSuccess = {
+                _chatUiState.value = ChatUiState.Success("batman", it)
+            }, onError = {
+                _chatUiState.value = ChatUiState.Error(e = it)
+            })
 
         }
     }
-    private fun addChat(chatRoomId:String,chat: Chat){
 
+    fun addChat(chat: Chat) {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCaseAddChats(roomId, chat)
+        }
     }
 
+
 }
-
-
-
-
-
-
-
-
-
-private val sampleChats = listOf(
-    Chat(isUser = false, primaryContent = null, secondaryContent = "HELLO BACK", primaryImg = null, secondaryImg = null),
-    Chat(isUser = true, primaryContent = "What are you up to?", secondaryContent = null, primaryImg = null, secondaryImg = null),
-    Chat(isUser = false, primaryContent = null, secondaryContent = null, primaryImg = "https://unsplash.it/200/200", secondaryImg = null),
-    Chat(isUser = true, primaryContent = null, secondaryContent = null, primaryImg = null, secondaryImg = "https://unsplash.it/200/201"),
-    Chat(isUser = false, primaryContent = "Just working on some stuff.", secondaryContent = null, primaryImg = null, secondaryImg = null),
-    Chat(isUser = true, primaryContent = null, secondaryContent = null, primaryImg = "https://unsplash.it/200/202", secondaryImg = null),
-    Chat(isUser = false, primaryContent = "Have you seen the new movie?", secondaryContent = null, primaryImg = null, secondaryImg = "https://unsplash.it/200/203"),
-    Chat(isUser = true, primaryContent = "It's really good!", secondaryContent = "I heard it's a must-watch!", primaryImg = null, secondaryImg = null),
-    Chat(isUser = false, primaryContent = null, secondaryContent = null, primaryImg = "https://unsplash.it/200/204", secondaryImg = null),
-    Chat(isUser = true, primaryContent = "What time should we meet?", secondaryContent = null, primaryImg = null, secondaryImg = "https://unsplash.it/200/205"),
-    Chat(isUser = false, primaryContent = "What's your favorite food?", secondaryContent = null, primaryImg = null, secondaryImg = null),
-    Chat(isUser = true, primaryContent = null, secondaryContent = null, primaryImg = "https://unsplash.it/200/206", secondaryImg = null),
-    Chat(isUser = false, primaryContent = null, secondaryContent = null, primaryImg = "https://unsplash.it/200/207", secondaryImg = null),
-    Chat(isUser = true, primaryContent = "I love RPGs too!", secondaryContent = null, primaryImg = null, secondaryImg = null),
-    Chat(isUser = false, primaryContent = "Have you read any good books lately?", secondaryContent = null, primaryImg = null, secondaryImg = null),
-    Chat(isUser = true, primaryContent = "Sounds fun! Which beach?", secondaryContent = null, primaryImg = null, secondaryImg = "https://unsplash.it/200/208"),
-    Chat(isUser = false, primaryContent = null, secondaryContent = null, primaryImg = null, secondaryImg = "https://unsplash.it/200/209"),
-    Chat(isUser = true, primaryContent = null, secondaryContent = null, primaryImg = "https://unsplash.it/200/210", secondaryImg = null),
-    Chat(isUser = false, primaryContent = "What's your favorite season?", secondaryContent = null, primaryImg = null, secondaryImg = null),
-    Chat(isUser = false, primaryContent = null, secondaryContent = null, primaryImg = "https://unsplash.it/200/212", secondaryImg = null)
-)

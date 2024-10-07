@@ -37,18 +37,32 @@ fun ChatUiScreenRoute(
         ChatUiState.Loading -> {}
         is ChatUiState.Success -> {
             val successState = uiState as ChatUiState.Success
-            ChatScreen(successState.title, successState.chats)
+            ChatScreen(
+                successState.title,
+                successState.chats,
+                onMsgSend = {
+                    viewModel.addChat(
+                        chat = Chat(
+                            primaryContent = it,
+                            secondaryContent = null,
+                            secondaryImg = null,
+                            isUser = true,
+                            primaryImg = null,
+                            timestamp = null
+                        )
+                    )
+                })
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(title: String, chats: List<Chat>) {
+fun ChatScreen(title: String, chats: List<Chat>, onMsgSend: (String) -> Unit) {
     val listState = rememberLazyListState()
 
     LaunchedEffect(chats) {
-        if (chats.size > 2 ){
+        if (chats.size > 2) {
             listState.scrollToItem(chats.size - 1)
         }
     }
@@ -59,10 +73,12 @@ fun ChatScreen(title: String, chats: List<Chat>) {
                 title = { Text(title) }
             )
         },
-        bottomBar ={
+        bottomBar = {
             ChatTextField(
                 modifier = Modifier,
-                onSend = {},
+                onSend = {
+                    onMsgSend(it)
+                },
                 onClickPhoto = {}
             )
         }
