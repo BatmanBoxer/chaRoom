@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +27,7 @@ fun ChatTemplate(chat: Chat) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(2.dp)
     ) {
         Column(
             modifier = Modifier.align(if (chat.isUser) Alignment.TopEnd else Alignment.TopStart)
@@ -45,6 +46,7 @@ fun ChatTemplate(chat: Chat) {
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(12.dp)
+                        .widthIn(max = 200.dp)
                 )
             }
 
@@ -97,6 +99,7 @@ fun ChatTemplate(chat: Chat) {
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(12.dp)
+                        .widthIn(max = 200.dp)
                 )
             }
         }
