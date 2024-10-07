@@ -15,11 +15,13 @@ class UseCaseGetChats @Inject constructor(
 ) {
     suspend operator fun invoke(
         roomId: String,
+        limit:Long,
         onSuccess: (List<Chat>) -> Unit,
         onError: (error: String) -> Unit
     ) {
         val userUid = firebaseAuth.uid
         repository.getChats(roomId,
+            limit,
             onResult = { chat ->
                 onSuccess(chat.map { it.toChat(userUid ?: "null") })
             },

@@ -15,7 +15,7 @@ data class ChatDto(
 
 fun ChatDto.toChat(userID:String): Chat {
     return Chat(
-        isUser = if (sentUserId == userID) true else false,
+        isUser = sentUserId == userID,
         primaryContent =primaryContent,
         secondaryContent = secondaryContent,
         primaryImg = primaryImg,

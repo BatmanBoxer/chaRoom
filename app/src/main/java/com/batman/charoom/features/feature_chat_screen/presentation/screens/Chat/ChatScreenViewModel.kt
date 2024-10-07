@@ -27,6 +27,7 @@ class ChatScreenViewModel @Inject constructor(
 ) : ViewModel() {
     private val _chatUiState = MutableStateFlow<ChatUiState>(ChatUiState.Loading)
     val chatUiState: StateFlow<ChatUiState> = _chatUiState
+    private var currentLimit = MutableStateFlow(50L)
 
     private val roomId: String = savedStateHandle["chatId"] ?: ""
 
@@ -37,13 +38,20 @@ class ChatScreenViewModel @Inject constructor(
     private fun fetchChat() {
         _chatUiState.value = ChatUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            useCaseGetChats(roomId, onSuccess = {
-                _chatUiState.value = ChatUiState.Success("batman", it)
-            }, onError = {
-                _chatUiState.value = ChatUiState.Error(e = it)
-            })
+            currentLimit.collect { limit ->
+                useCaseGetChats(roomId,
+                    limit = limit,
+                    onSuccess = {
+                        _chatUiState.value = ChatUiState.Success("batman", it)
+                    }, onError = {
+                        _chatUiState.value = ChatUiState.Error(e = it)
+                    })
+            }
 
         }
+    }
+    fun changeLimit(){
+        currentLimit.value += 100
     }
 
     fun addChat(chat: Chat) {
@@ -51,6 +59,7 @@ class ChatScreenViewModel @Inject constructor(
             useCaseAddChats(roomId, chat)
         }
     }
+
 
 
 }

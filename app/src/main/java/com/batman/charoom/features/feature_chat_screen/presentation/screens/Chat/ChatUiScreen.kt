@@ -1,6 +1,7 @@
 package com.batman.charoom.features.feature_chat_screen.presentation.screens.Chat
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,6 +52,8 @@ fun ChatUiScreenRoute(
                             timestamp = null
                         )
                     )
+                }, addChatlimit = {
+                    viewModel.changeLimit()
                 })
         }
     }
@@ -58,19 +61,16 @@ fun ChatUiScreenRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(title: String, chats: List<Chat>, onMsgSend: (String) -> Unit) {
+fun ChatScreen(title: String, chats: List<Chat>, onMsgSend: (String) -> Unit,addChatlimit:()->Unit) {
     val listState = rememberLazyListState()
 
-    LaunchedEffect(chats) {
-        if (chats.size > 2) {
-            listState.scrollToItem(chats.size - 1)
-        }
-    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title) }
+                title = { Text(title, modifier = Modifier.clickable {
+                    addChatlimit()
+                }) }
             )
         },
         bottomBar = {
@@ -89,6 +89,7 @@ fun ChatScreen(title: String, chats: List<Chat>, onMsgSend: (String) -> Unit) {
                 .padding(innerPadding)
         ) {
             LazyColumn(
+                reverseLayout = true,
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(vertical = 8.dp)
