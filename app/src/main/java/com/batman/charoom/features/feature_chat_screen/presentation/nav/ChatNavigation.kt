@@ -14,10 +14,11 @@ import com.batman.charoom.rootNavigation.NavHomeScreen
  * Created by Pronay Sarker on 05/10/2024 (6:16 PM)
  */
 fun NavGraphBuilder.chatScreenRoute(
-    navController: NavController
+    navController: NavController,
+    navigateToProfileScreen:() -> Unit,
 ) {
     navigation<NavChatScreenRoute>(
-        startDestination = NavChatScreen(chatId = "HMzlhOOiRmWeL7y2Q5u9"),
+        startDestination =NavHomeScreen
     ) {
         homeScreen(navigateToChatScreen = navController::navigateToChatScreen)
 

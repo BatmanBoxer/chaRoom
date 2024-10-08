@@ -3,6 +3,7 @@ package com.batman.charoom.features.feature_profile.presentation.screens.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batman.charoom.common.dataClass.UserData
+import com.batman.charoom.features.feature_profile.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,11 +25,11 @@ class ProfileViewmodel @Inject constructor(
         viewModelScope.launch {
             delay(3000)
             _profileUiState.value = ProfileUiState.Success(
-                UserData(
-                    isUser = true,
+                User(
+                    isLocalUser = true,
                     name = "Pronay Sarker",
                     email = "pronaycoding@gmail.com",
-                    image = null,
+                    imgUrl = null,
                 )
             )
         }

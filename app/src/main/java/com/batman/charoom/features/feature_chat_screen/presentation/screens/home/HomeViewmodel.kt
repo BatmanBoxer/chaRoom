@@ -4,11 +4,18 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batman.charoom.features.feature_chat_screen.domain.model.RecentChat
+import com.batman.charoom.features.feature_chat_screen.domain.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -16,37 +23,72 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewmodel @Inject constructor(
-
+    private val homeRepository: HomeRepository
 ) : ViewModel() {
 
     private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val homeUiState: StateFlow<HomeUiState> = _homeUiState
 
     init {
-        fetchData()
+        viewModelScope.launch {
+            homeRepository.addUserToChatRoom("darwin", "chatRoomId",
+                onSuccess = {
+                    Log.d("HomeViewmodel", "User added to chat room")
+                },
+                onFailure = {
+                    Log.d("HomeViewmodel", "Error adding user to chat room: $it")
+                }
+            )
+            homeRepository.listenForChatRoomsForParticipant("darwin") { chatRooms ->
+                Log.d("HomeViewmodel", "Chat rooms: $chatRooms")
+            }
+            val user = homeRepository.getUserData("testid")
+
+            Log.d("HomeViewmodel", "User:$user")
+        }
+
+        fetchData("darwin")
     }
-    private fun fetchData() {
+
+    private fun fetchData(Localuserid: String) {
+        val formater = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         viewModelScope.launch {
             _homeUiState.value = HomeUiState.Loading
-            delay(1000)
-            _homeUiState.value = HomeUiState.Success(sampleChats)
+            homeRepository.listenForChatRoomsForParticipant(Localuserid) { chatRooms ->
+                val recentChat: MutableList<RecentChat> = mutableListOf()
 
+                // Use coroutineScope to await results
+                viewModelScope.launch {
+                    // Create a list of deferred results using async
+                    val deferredResults = chatRooms.map { room ->
+                        async {
+                            val userID = "testid"
+                            // Call the suspend function within the async block
+                            val userData = homeRepository.getUserData(userID)
+                            userData?.let {
+                                RecentChat(
+                                    userId = userID,
+                                    it.name ?: "null",
+                                    it.imgUrl ?: "null",
+                                    formater.format(room.lastMessageTime?.toDate() ?: Date()),
+                                    timestamp = room.lastMessageTime.toString(),
+
+                                )
+                            }
+                        }
+                    }
+
+                    // Await all results and filter out nulls
+                    recentChat.addAll(deferredResults.awaitAll().filterNotNull())
+
+                    _homeUiState.value = HomeUiState.Success(recentChat)
+                    Log.d("userChat", recentChat.toString())
+                }
+
+            }
         }
     }
+
+
 }
 
-val sampleChats = listOf(
-    RecentChat("John Doe", "https://unsplash.it/200/200", "Hey, how's it going?", "12:45 PM"),
-    RecentChat("Jane Smith", "https://via.placeholder.com/40", "See you tomorrow!", "11:30 AM"),
-    RecentChat("Alex Johnson", "https://via.placeholder.com/40", "Thanks for the help!", "9:15 AM"),
-    RecentChat("Emily Davis", "https://via.placeholder.com/40", "Can you call me?", "Yesterday"),
-    RecentChat("John Doe", "https://unsplash.it/200/200", "Hey, how's it going?", "12:45 PM"),
-    RecentChat("Jane Smith", "https://via.placeholder.com/40", "See you tomorrow!", "11:30 AM"),
-    RecentChat("Alex Johnson", "https://via.placeholder.com/40", "Thanks for the help!", "9:15 AM"),
-    RecentChat("Emily Davis", "https://via.placeholder.com/40", "Can you call me?", "Yesterday"),
-    RecentChat("John Doe", "https://unsplash.it/200/200", "Hey, how's it going?", "12:45 PM"),
-    RecentChat("Jane Smith", "https://via.placeholder.com/40", "See you tomorrow!", "11:30 AM"),
-    RecentChat("Alex Johnson", "https://via.placeholder.com/40", "Thanks for the help!", "9:15 AM"),
-    RecentChat("Emily Davis", "https://via.placeholder.com/40", "Can you call me?", "Yesterday"),
-    RecentChat("Michael Brown", "https://via.placeholder.com/40", "Let's meet up later.", "2 days ago")
-)

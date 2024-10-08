@@ -45,6 +45,7 @@ import com.batman.charoom.common.component.ChaRoomErrorScreen
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
 import com.batman.charoom.common.component.ChaRoomTopAppBar
 import com.batman.charoom.common.dataClass.UserData
+import com.batman.charoom.features.feature_profile.domain.model.User
 
 /**
  * Created by Pronay Sarker on 07/10/2024 (7:35 PM)
@@ -57,6 +58,7 @@ fun ProfileScreenRoute(
     val viewmodel: ProfileViewmodel = hiltViewModel()
     val uiState by viewmodel.profileUiState.collectAsStateWithLifecycle()
 
+    //we are not using launched effect to load initial data. intial data will be laoded from viewmodle so we can test it dufing test cases
     LaunchedEffect(key1 = true) {
         viewmodel.fetchUserData()
     }
@@ -64,7 +66,7 @@ fun ProfileScreenRoute(
     ProfileScreen(
         uiState = uiState,
         navigateBack = navigateBack,
-        onRetry = { viewmodel.fetchUserData() }
+        onRetry = viewmodel::fetchUserData
     )
 }
 
@@ -98,16 +100,21 @@ fun ProfileScreen(
 
     }
 }
+
 @Composable
-@Preview ( showSystemUi = true)
+@Preview(showSystemUi = true)
 fun ProfileContent(
     modifier: Modifier = Modifier,
-    userData: UserData = UserData(
-        isUser = false,
+    userData: User = User(
+        isLocalUser = false,
         name = "Pronay Sarker",
         email = "pronaycoding@gmail.com",
-        image = null,
+        imgUrl = null,
     ),
+    //make this button take a is user boolean so that we can show the message button only if the user is not the current user
+    //also make this route take a id:String so we can see if the load the users acourding to thier uid
+
+
     onMessageClick: () -> Unit = {} // Action for the Message button
 ) {
     Column(
@@ -123,9 +130,9 @@ fun ProfileContent(
                 .size(150.dp)
                 .align(Alignment.CenterHorizontally),
         ) {
-            if (userData.image != null) {
+            if (userData.imgUrl != null) {
                 AsyncImage(
-                    model = userData.image,
+                    model = userData.imgUrl,
                     contentDescription = "profileImage",
                     modifier = Modifier
                         .size(150.dp)
@@ -145,7 +152,7 @@ fun ProfileContent(
                 )
             }
 
-            if (userData.isUser) {
+            if (userData.isLocalUser == true) {
                 IconButton(
                     modifier = Modifier
                         .background(Color.Black.copy(alpha = 0.7f), CircleShape)
@@ -162,7 +169,7 @@ fun ProfileContent(
                 }
             }
 
-            if (!userData.isUser) {
+            if (!userData.isLocalUser!!) {
                 IconButton(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -195,14 +202,14 @@ fun ProfileContent(
             ) {
                 UserDataRow(
                     title = "Name",
-                    data = userData.name
+                    data = userData.name ?: ""
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 UserDataRow(
                     title = "Email",
-                    data = userData.email
+                    data = userData.email ?: ""
                 )
             }
         }
@@ -234,7 +241,6 @@ fun UserDataRow(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-
         Divider(
             color = Color.Gray.copy(alpha = 0.5f),
             thickness = 0.5.dp

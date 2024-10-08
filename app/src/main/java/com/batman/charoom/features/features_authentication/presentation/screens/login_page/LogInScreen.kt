@@ -103,7 +103,9 @@ fun LoginScreen(
             when (uiState) {
                 LoginUiState.Initial -> Unit
 
-                LoginUiState.ShowProgress -> ChaRoomLoadingWheel()
+                LoginUiState.ShowProgress -> {
+                        ChaRoomLoadingWheel()
+                }
 
                 is LoginUiState.ShowValidationErrorString -> {
                     LaunchedEffect(Unit) {
@@ -112,7 +114,7 @@ fun LoginScreen(
                 }
 
                 LoginUiState.Success -> {
-                    Log.d("paras","sucess")
+                    Log.d("paras", "sucess")
                     LaunchedEffect(Unit) {
                         navigateToHomeScreen()
                     }

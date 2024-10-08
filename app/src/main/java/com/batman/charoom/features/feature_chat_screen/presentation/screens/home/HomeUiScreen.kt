@@ -250,17 +250,7 @@ fun ImageItem(
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewRecentChatsScreen() {
-    Surface(
-        color = MaterialTheme.colorScheme.background,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        HomeScreenContent(chats = sampleChats)
-    }
 
-}
 
 
 

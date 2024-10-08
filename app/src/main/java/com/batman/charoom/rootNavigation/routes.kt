@@ -27,3 +27,9 @@ object NavAuthRoute
 data class NavChatScreen(
     val chatId:String,
 )
+
+@Serializable
+object NavProfileRoute
+
+@Serializable
+object NavProfileScreen

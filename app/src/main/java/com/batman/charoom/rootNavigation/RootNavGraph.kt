@@ -7,7 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.batman.charoom.features.feature_chat_screen.presentation.nav.chatScreenRoute
 import com.batman.charoom.features.feature_chat_screen.presentation.nav.navigateToHomeScreen
+import com.batman.charoom.features.feature_profile.presentation.screens.nav.navigateToProfileScreen
+import com.batman.charoom.features.feature_profile.presentation.screens.nav.profileNavRoute
 import com.batman.charoom.features.features_authentication.presentation.nav.authNavRoute
+import com.batman.charoom.features.features_authentication.presentation.nav.navigateToSignUpScreen
 
 @Composable
 fun RootNavGraph(modifier: Modifier = Modifier) {
@@ -15,7 +18,7 @@ fun RootNavGraph(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = NavAuthRoute,
+        startDestination = NavChatScreenRoute,
         enterTransition = { EnterTransition.None },
     ) {
         authNavRoute(
@@ -25,6 +28,13 @@ fun RootNavGraph(modifier: Modifier = Modifier) {
 
         chatScreenRoute(
             navController = navController,
+            navigateToProfileScreen =navController::navigateToProfileScreen
         )
+        profileNavRoute(
+            navController = navController,
+            navigateToSignUpScreen = navController::navigateToSignUpScreen
+        )
+
+
     }
 }
