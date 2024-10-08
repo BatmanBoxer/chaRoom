@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
 import com.batman.charoom.common.utils.Resource
+import com.batman.charoom.features.features_authentication.domain.model.LogInData
 import com.batman.charoom.features.features_authentication.domain.repository.AuthRepository
 import com.batman.charoom.features.features_authentication.domain.usecase.UseCaseLogIn
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,26 +29,27 @@ class LoginViewModel @Inject constructor(
     private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.Initial)
     val loginUiState: StateFlow<LoginUiState> = _loginUiState
 
-    fun login(email: String, password: String) {
-        _loginUiState.value = LoginUiState.Success
-//        Log.d("batman","login")
-//        useCaseLogIn(email, password).onEach { result ->
-//            when (result) {
-//                is Resource.Error -> {
-//                    _loginUiState.value =
-//                        LoginUiState.ShowValidationErrorString(result.message ?: "Unknown error")
-//                }
-//
-//                is Resource.Loading -> {
-//                    _loginUiState.value = LoginUiState.ShowProgress
-//                }
-//
-//                is Resource.Success -> {
-//                    _loginUiState.value = LoginUiState.Success
-//                }
-//            }
-//
-//        }.launchIn(viewModelScope)
+    fun login(logInData: LogInData) {
+        Log.d("paras",logInData.toString())
+        _loginUiState.value = LoginUiState.ShowProgress
+        useCaseLogIn(logInData.email, logInData.password).onEach { result ->
+            when (result) {
+                is Resource.Error -> {
+                    _loginUiState.value =
+                        LoginUiState.ShowValidationErrorString(result.message ?: "Unknown error")
+                }
+
+                is Resource.Loading -> {
+                    _loginUiState.value = LoginUiState.ShowProgress
+                }
+
+                is Resource.Success -> {
+                    Log.d("paras","viewmodle sucess")
+                    _loginUiState.value = LoginUiState.Success
+                }
+            }
+
+        }.launchIn(viewModelScope)
 
     }
 

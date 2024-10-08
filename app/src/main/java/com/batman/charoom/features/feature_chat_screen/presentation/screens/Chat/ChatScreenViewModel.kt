@@ -51,7 +51,7 @@ class ChatScreenViewModel @Inject constructor(
         }
     }
     fun changeLimit(){
-        currentLimit.value += 100
+        currentLimit.value += 50L
     }
 
     fun addChat(chat: Chat) {

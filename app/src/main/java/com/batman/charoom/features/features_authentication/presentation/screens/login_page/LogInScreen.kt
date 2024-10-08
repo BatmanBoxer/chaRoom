@@ -1,6 +1,7 @@
 package com.batman.charoom.features.features_authentication.presentation.screens.login_page
 
 import android.app.Activity
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batman.charoom.R
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
 import com.batman.charoom.common.component.ChaRoomTopAppBar
+import com.batman.charoom.features.features_authentication.domain.model.LogInData
 import com.batman.charoom.features.features_authentication.presentation.screens.components.InputField
 
 @Composable
@@ -71,17 +73,17 @@ fun LoginScreen(
     uiState: LoginUiState,
     navigateToHomeScreen: () -> Unit,
     navigateToSignupScreen: () -> Unit,
-    onLoginClick: (email: String, password: String) -> Unit
+    onLoginClick: (LogInData) -> Unit
 ) {
     val context = LocalContext.current
     var showExitAppDialog by rememberSaveable { mutableStateOf(false) }
     val activity = LocalContext.current as? Activity
 
-    if(showExitAppDialog){
+    if (showExitAppDialog) {
         ExitAppDialog { userChoise ->
-            if(userChoise){
+            if (userChoise) {
                 activity?.finish()
-            } else{
+            } else {
                 showExitAppDialog = false
             }
         }
@@ -94,7 +96,8 @@ fun LoginScreen(
     ) {
         Box(modifier = Modifier.padding(it)) {
             LoginScreenContent(
-                navigateToSignupScreen = navigateToSignupScreen, onLoginClick = onLoginClick
+                navigateToSignupScreen = navigateToSignupScreen,
+                onLoginClick = onLoginClick
             )
 
             when (uiState) {
@@ -109,6 +112,7 @@ fun LoginScreen(
                 }
 
                 LoginUiState.Success -> {
+                    Log.d("paras","sucess")
                     LaunchedEffect(Unit) {
                         navigateToHomeScreen()
                     }
@@ -123,10 +127,17 @@ fun LoginScreen(
 fun LoginScreenContent(
     modifier: Modifier = Modifier,
     navigateToSignupScreen: () -> Unit,
-    onLoginClick: (email: String, password: String) -> Unit
+    onLoginClick: (LogInData) -> Unit
 ) {
     var rememberPassword by remember { mutableStateOf(false) }
-
+    val loginDataState by remember {
+        mutableStateOf(
+            LogInData(
+                password = "",
+                email = ""
+            )
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -154,9 +165,13 @@ fun LoginScreenContent(
             )
 
             Spacer(modifier = Modifier.height(50.dp))
-            InputField(icon = Icons.Default.Email, placeholder = "Email") { }
+            InputField(icon = Icons.Default.Email, placeholder = "Email") {
+                loginDataState.email = it
+            }
             Spacer(modifier = Modifier.height(20.dp))
-            InputField(icon = Icons.Default.Lock, placeholder = "Password") { }
+            InputField(icon = Icons.Default.Lock, placeholder = "Password") {
+                loginDataState.password = it
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -189,7 +204,7 @@ fun LoginScreenContent(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(55.dp),
-                onClick = { onLoginClick("email", "123456") },
+                onClick = { onLoginClick(loginDataState) },
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Text(

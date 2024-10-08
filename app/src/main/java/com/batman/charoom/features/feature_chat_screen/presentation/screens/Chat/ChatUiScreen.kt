@@ -1,5 +1,6 @@
 package com.batman.charoom.features.feature_chat_screen.presentation.screens.Chat
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batman.charoom.features.feature_chat_screen.domain.model.Chat
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 
 @Composable
 fun ChatUiScreenRoute(
@@ -59,12 +63,22 @@ fun ChatUiScreenRoute(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
 fun ChatScreen(title: String, chats: List<Chat>, onMsgSend: (String) -> Unit,addChatlimit:()->Unit) {
     val listState = rememberLazyListState()
 
-
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
+            .debounce(1000)
+            .collect { visibleItems ->
+                val lastVisibleItem = visibleItems.lastOrNull()
+                if (lastVisibleItem?.index == chats.size - 1) {
+                    Log.d("darwin koirala","pagination triggered")
+                    addChatlimit()
+                }
+            }
+    }
     Scaffold(
         topBar = {
             TopAppBar(

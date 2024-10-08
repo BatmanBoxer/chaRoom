@@ -25,9 +25,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,15 +46,14 @@ import com.batman.charoom.features.features_authentication.presentation.screens.
 @Composable
 fun SignUpScreenRoute(
     modifier: Modifier = Modifier,
-    viewmodel: SignupViewmodel = hiltViewModel(),
+    viewmodel: SignUpViewModel = hiltViewModel(),
     navigateToLoginScreen: () -> Unit
 ) {
     val uiState by viewmodel.signupUiState.collectAsStateWithLifecycle()
-
     SignUpScreen(
         uiState = uiState,
         navigateToLoginScreen = navigateToLoginScreen,
-        signUp = viewmodel::signup
+        signUp = viewmodel::signUp
     )
 }
 
@@ -88,8 +89,15 @@ fun SignUpScreen(
                 }
 
                 SignupUiState.Success -> {
-                    Toast.makeText(context, "Account created successfully. Please login", Toast.LENGTH_SHORT).show()
-                    navigateToLoginScreen()
+                    LaunchedEffect(Unit) {
+                        Toast.makeText(
+                            context,
+                            "Account created successfully. Please login",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        navigateToLoginScreen()
+                    }
+
                 }
             }
         }
@@ -103,7 +111,16 @@ fun SignUpScreen(
     signUp: (SignUpData) -> Unit
 ) {
     var agreeToTerms by remember { mutableStateOf(false) }
-
+    val signUpDataState by remember {
+        mutableStateOf<SignUpData>(
+            SignUpData(
+                name = "",
+                email = "",
+                password = "",
+                confirmPassword = ""
+            )
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -131,13 +148,21 @@ fun SignUpScreen(
             )
             Spacer(modifier = Modifier.height(50.dp))
 
-            InputField(icon = Icons.Default.AccountCircle, placeholder = "Name") { }
+            InputField(icon = Icons.Default.AccountCircle, placeholder = "Name") {
+                signUpDataState.name = it
+            }
             Spacer(modifier = Modifier.height(10.dp))
-            InputField(icon = Icons.Default.Email, placeholder = "Email") { }
+            InputField(icon = Icons.Default.Email, placeholder = "Email") {
+                signUpDataState.email = it
+            }
             Spacer(modifier = Modifier.height(10.dp))
-            InputField(icon = Icons.Default.Lock, placeholder = "Password") { }
+            InputField(icon = Icons.Default.Lock, placeholder = "Password") {
+                signUpDataState.password = it
+            }
             Spacer(modifier = Modifier.height(10.dp))
-            InputField(icon = Icons.Default.Lock, placeholder = "Confirm Password") { }
+            InputField(icon = Icons.Default.Lock, placeholder = "Confirm Password") {
+                signUpDataState.confirmPassword = it
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(0.85f),
@@ -173,14 +198,7 @@ fun SignUpScreen(
                     .fillMaxWidth(0.8f)
                     .height(55.dp),
                 onClick = {
-                    // add validation
-                    signUp(
-                        SignUpData(
-                            name = "",
-                            email = "",
-                            password = "",
-                        )
-                    )
+                    signUp(signUpDataState)
                 },
                 shape = RoundedCornerShape(15.dp)
             ) {

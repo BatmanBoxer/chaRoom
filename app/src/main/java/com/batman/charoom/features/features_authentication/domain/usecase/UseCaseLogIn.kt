@@ -1,5 +1,6 @@
 package com.batman.charoom.features.features_authentication.domain.usecase
 
+import android.util.Log
 import com.batman.charoom.common.utils.Resource
 import com.batman.charoom.features.features_authentication.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ class UseCaseLogIn @Inject constructor(
         emit(Resource.Loading<Unit>())
         val result = repository.login(email, password)
         result.onSuccess {
+            Log.d("paras","usecase sucess")
             emit(Resource.Success(Unit))
         }.onFailure { e ->
             emit(Resource.Error<Unit>(e.localizedMessage ?: "Login failed"))

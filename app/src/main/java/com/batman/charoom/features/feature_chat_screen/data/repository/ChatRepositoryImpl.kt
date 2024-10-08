@@ -5,6 +5,7 @@ import com.batman.charoom.features.feature_chat_screen.data.remote.dto.ChatDto
 import com.batman.charoom.features.feature_chat_screen.domain.model.RoomInfoDto
 import com.batman.charoom.features.feature_chat_screen.domain.repository.ChatRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import java.lang.Error
@@ -13,12 +14,14 @@ import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : ChatRepository {
+
+    private var chatListenerRegistration: ListenerRegistration? = null
     override suspend fun getChats(chatId: String, limit:Long,onResult: (List<ChatDto>) -> Unit, onError: (String) -> Unit) {
-        firestore.collection("chats_rooms/$chatId/chats")
+        chatListenerRegistration?.remove()
+        chatListenerRegistration = firestore.collection("chats_rooms/$chatId/chats")
             .orderBy("time", Query.Direction.DESCENDING)
             .limit(limit)
             .addSnapshotListener { snapshots, exception ->
-                Log.d("darwin","snapshot triggered")
                 if (exception != null) {
                     onError(exception.toString())
                     return@addSnapshotListener
@@ -33,6 +36,7 @@ class ChatRepositoryImpl @Inject constructor(
                     onResult(chatList)
                 }
             }
+
     }
 
 
@@ -47,9 +51,7 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun loadMoreChat(pageNumber: Int): List<ChatDto> {
-        return emptyList()
-    }
+
 
     override suspend fun getRoomInfo(roomId: String): RoomInfoDto? {
         return try {
