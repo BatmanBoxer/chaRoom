@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -23,16 +25,20 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -55,69 +61,50 @@ import com.batman.charoom.common.objects.ChaRoomIcons
 @Composable
 fun HomeUiScreenRoute(
     viewmodel: HomeViewmodel = hiltViewModel(),
-    navigateToChatScreen: (String) -> Unit
+    navigateToChatScreen: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewmodel.homeUiState.collectAsStateWithLifecycle()
 
     HomeUiScreen(
+        modifier = modifier,
         uiState = uiState,
         navigateToChatScreen = navigateToChatScreen
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeUiScreen(
     uiState: HomeUiState,
     modifier: Modifier = Modifier,
     navigateToChatScreen: (String) -> Unit
 ) {
-    var isSearchActive by rememberSaveable { mutableStateOf(false) }
-    var showMoreMenu by rememberSaveable { mutableStateOf(false) }
+    var searchItem by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    if (isSearchActive) {
-                        // implement search box
-                    } else {
-                        Text(text = "Chats")
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                value = searchItem,
+                onValueChange = { searchItem = it },
+                singleLine = true,
+                placeholder = { Text(text = "Search in chats") },
+                trailingIcon = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Filled.PersonSearch,
+                            contentDescription = "search chats"
+                        )
                     }
                 },
-                navigationIcon = {
-                    if (!isSearchActive) {
-                        IconButton(onClick = { isSearchActive = !isSearchActive }) {
-                            Icon(
-                                imageVector = ChaRoomIcons.Search,
-                                contentDescription = "Search chats"
-                            )
-                        }
-                    }
-                },
-                actions = {
-                    if (!isSearchActive) {
-                        IconButton(onClick = { showMoreMenu = !showMoreMenu }) {
-                            Icon(imageVector = ChaRoomIcons.MoreVert, contentDescription = "More")
-                        }
-                    }
-
-                    if (showMoreMenu) {
-                        DropdownMenu(
-                            expanded = showMoreMenu,
-                            onDismissRequest = { showMoreMenu = false }) {
-                            DropdownMenuItem(text = { Text(text = "Settings") }, onClick = { })
-                            DropdownMenuItem(text = { Text(text = "Licences") }, onClick = { })
-                            DropdownMenuItem(
-                                text = { Text(text = "About Developers") },
-                                onClick = { })
-                        }
-                    }
-                }
+                shape = CircleShape
             )
         }
-    ) {
-        Box(modifier = Modifier.padding(it)) {
+    ) { innerpadding ->
+        Box(modifier = Modifier.padding(innerpadding)) {
             when (uiState) {
                 is HomeUiState.Error -> {
                     ChaRoomErrorScreen(title = uiState.message)
@@ -128,10 +115,18 @@ fun HomeUiScreen(
                 }
 
                 is HomeUiState.Success -> {
-                    HomeScreenContent(
-                        chats = uiState.chats,
-                        navigateToChatScreen = navigateToChatScreen
+                    val filteredChats = if (searchItem.isNotEmpty()) {
+                        uiState.chats.filter { chat ->
+                            chat.name.contains(searchItem, ignoreCase = true) ||
+                                    chat.lastMessage.contains(searchItem, ignoreCase = true)
+                        }
+                    } else {
+                        uiState.chats
+                    }
 
+                    HomeScreenContent(
+                        chats = filteredChats,
+                        navigateToChatScreen = navigateToChatScreen
                     )
                 }
 
@@ -232,24 +227,12 @@ fun ImageItem(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
-//    Image(
-//        painter = painterResource(id = R.drawable.empty_placeholder), contentDescription = "",
-//        contentScale = ContentScale.Crop,
-//        modifier = modifier
-//            .size(56.dp)
-//            .clip(CircleShape)
-//            .background(Color.Gray)
-//    )
-
-    /**
-     * currently AsyncImage is taking too much time to load images + freezes, we have to fix that.
-     */
     AsyncImage(
         model = imageUrl,
         contentDescription = null,
         placeholder = painterResource(id = R.drawable.empty_placeholder),
         fallback = painterResource(id = R.drawable.empty_placeholder),
-        error = painterResource(id = R.drawable.error),
+        error = painterResource(id = R.drawable.empty_placeholder),
         contentScale = ContentScale.Crop,
         modifier = modifier
             .size(56.dp)
