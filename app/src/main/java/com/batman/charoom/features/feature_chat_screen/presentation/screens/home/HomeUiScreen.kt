@@ -1,6 +1,7 @@
 package com.batman.charoom.features.feature_chat_screen.presentation.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,12 +55,13 @@ import com.batman.charoom.common.objects.ChaRoomIcons
 @Composable
 fun HomeUiScreenRoute(
     viewmodel: HomeViewmodel = hiltViewModel(),
-    navigateToChatScreen : (String) -> Unit
+    navigateToChatScreen: (String) -> Unit
 ) {
-    val uiState by  viewmodel.homeUiState.collectAsStateWithLifecycle()
+    val uiState by viewmodel.homeUiState.collectAsStateWithLifecycle()
 
     HomeUiScreen(
-        uiState = uiState
+        uiState = uiState,
+        navigateToChatScreen = navigateToChatScreen
     )
 }
 
@@ -67,7 +69,8 @@ fun HomeUiScreenRoute(
 @Composable
 fun HomeUiScreen(
     uiState: HomeUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToChatScreen: (String) -> Unit
 ) {
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
     var showMoreMenu by rememberSaveable { mutableStateOf(false) }
@@ -126,7 +129,9 @@ fun HomeUiScreen(
 
                 is HomeUiState.Success -> {
                     HomeScreenContent(
-                        chats = uiState.chats
+                        chats = uiState.chats,
+                        navigateToChatScreen = navigateToChatScreen
+
                     )
                 }
 
@@ -139,6 +144,7 @@ fun HomeUiScreen(
 
 @Composable
 fun HomeScreenContent(
+    navigateToChatScreen: (String) -> Unit,
     chats: List<RecentChat>,
     modifier: Modifier = Modifier
 ) {
@@ -148,7 +154,9 @@ fun HomeScreenContent(
             .padding(vertical = 8.dp)
     ) {
         items(chats.size) { index ->
-            ChatListItem(chat = chats[index])
+            ChatListItem(
+                chat = chats[index],
+                modifier = Modifier.clickable { navigateToChatScreen(chats[index].chatId) })
             if (index < chats.size - 1) {
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = 32.dp),

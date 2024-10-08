@@ -67,7 +67,7 @@ class HomeViewmodel @Inject constructor(
                             val userData = homeRepository.getUserData(userID)
                             userData?.let {
                                 RecentChat(
-                                    userId = userID,
+                                    chatId = room.chatRoomId ?: "null",
                                     it.name ?: "null",
                                     it.imgUrl ?: "null",
                                     formater.format(room.lastMessageTime?.toDate() ?: Date()),
