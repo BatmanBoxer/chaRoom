@@ -28,7 +28,7 @@ class SignUpViewModel @Inject constructor(
 
         viewModelScope.launch {
             _signupUiState.value = SignupUiState.ShowProgress
-            val signUp = repository.register(signUpData.email, signUpData.password)
+            val signUp = repository.register(signUpData.name,signUpData.email, signUpData.password)
             signUp.onSuccess {
                 _signupUiState.value = SignupUiState.Success
             }.onFailure {
@@ -40,22 +40,3 @@ class SignUpViewModel @Inject constructor(
 
 
 }
-//@HiltViewModel
-//class SignupViewmodel @Inject constructor(
-//
-//) : ViewModel() {
-//    private val _signupUiState = MutableStateFlow<SignupUiState>(SignupUiState.Initial)
-//    val signupUiState: StateFlow<SignupUiState> = _signupUiState
-//
-//    fun signup(signUpData: SignUpData) {
-//        _signupUiState.value = SignupUiState.ShowProgress
-//
-//        viewModelScope.launch {
-//            /**
-//             * for testing purpose
-//             */
-//            delay(999)
-//            _signupUiState.value = SignupUiState.Success
-//        }
-//    }
-//}
