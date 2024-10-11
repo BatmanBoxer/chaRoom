@@ -22,6 +22,7 @@ class ChatRepositoryImpl @Inject constructor(
             .orderBy("time", Query.Direction.DESCENDING)
             .limit(limit)
             .addSnapshotListener { snapshots, exception ->
+                Log.d("paras","snapshot listener")
                 if (exception != null) {
                     onError(exception.toString())
                     return@addSnapshotListener
@@ -42,7 +43,7 @@ class ChatRepositoryImpl @Inject constructor(
 
     override suspend fun addChat(roomId: String,chatDto: ChatDto) {
         try {
-            val chatRef = firestore.collection("chats_rooms/$roomId/chats")
+            val chatRef = firestore.collection("chats_room/$roomId/chats")
             chatRef.add(chatDto).await()
             Log.d("Firestore", "sucess adding chat")
 

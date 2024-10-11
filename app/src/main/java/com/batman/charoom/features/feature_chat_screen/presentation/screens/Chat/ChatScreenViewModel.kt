@@ -32,6 +32,7 @@ class ChatScreenViewModel @Inject constructor(
     private val roomId: String = savedStateHandle["chatId"] ?: ""
 
     init {
+        Log.d("paras","roomId is $roomId")
         fetchChat()
     }
 
