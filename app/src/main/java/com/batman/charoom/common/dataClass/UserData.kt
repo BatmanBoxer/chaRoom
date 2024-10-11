@@ -6,5 +6,6 @@ package com.batman.charoom.common.dataClass
 data class UserData(
     val imgUrl: String? = null,
     val name: String? = null,
-    val documentId:String? = null
+    val documentId:String? = null,
+    val email:String?= null
 )

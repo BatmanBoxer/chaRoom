@@ -32,7 +32,7 @@ class HomeRepositoryImpl @Inject constructor(
             onSuccess()
             println("User $user added to chat room $chatRoomId")
         } catch (e: Exception) {
-            println("Error adding user to chat room: ${e.message}")
+            onFailure(e.message.toString())
         }
     }
     override suspend fun listenForChatRoomsForParticipant(userId: String, onResult: (List<ChatRoom>) -> Unit) {
@@ -72,7 +72,8 @@ class HomeRepositoryImpl @Inject constructor(
                 UserData(
                     documentId = it.id,
                     imgUrl = it.getString("profileImg") ?: "",
-                    name = it.getString("name") ?: ""
+                    name = it.getString("name") ?: "",
+                    email = it.getString("email") ?: ""
                 )
             }
         } catch (e: Exception) {

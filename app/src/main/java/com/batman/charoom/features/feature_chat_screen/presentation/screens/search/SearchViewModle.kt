@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batman.charoom.common.dataClass.UserData
-import com.batman.charoom.features.feature_chat_screen.data.repository.SearchRepository
+import com.batman.charoom.features.feature_chat_screen.domain.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,13 +20,8 @@ class SearchViewModel @Inject constructor(
     var searchUserList = mutableStateListOf<UserData>()
 
 
-
     init {
         searchId(name ?: "null")
-    }
-
-    fun initialize() {
-
     }
 
     private fun searchId(name: String) {

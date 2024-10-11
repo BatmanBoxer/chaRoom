@@ -18,7 +18,7 @@ class ChatRepositoryImpl @Inject constructor(
     private var chatListenerRegistration: ListenerRegistration? = null
     override suspend fun getChats(chatId: String, limit:Long,onResult: (List<ChatDto>) -> Unit, onError: (String) -> Unit) {
         chatListenerRegistration?.remove()
-        chatListenerRegistration = firestore.collection("chats_rooms/$chatId/chats")
+        chatListenerRegistration = firestore.collection("chats_room/$chatId/chats")
             .orderBy("time", Query.Direction.DESCENDING)
             .limit(limit)
             .addSnapshotListener { snapshots, exception ->

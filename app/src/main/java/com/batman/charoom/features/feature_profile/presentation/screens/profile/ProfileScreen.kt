@@ -53,7 +53,8 @@ import com.batman.charoom.features.feature_profile.domain.model.User
 @Composable
 fun ProfileScreenRoute(
     modifier: Modifier = Modifier,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToChatScreen :()->Unit = {},
 ) {
     val viewmodel: ProfileViewmodel = hiltViewModel()
     val uiState by viewmodel.profileUiState.collectAsStateWithLifecycle()
@@ -62,7 +63,8 @@ fun ProfileScreenRoute(
     ProfileScreen(
         uiState = uiState,
         navigateBack = navigateBack,
-        onRetry = viewmodel::fetchUserData
+        onRetry = viewmodel::fetchUserData,
+        onMessageClick = {viewmodel.addUserToChat()}
     )
 }
 
@@ -70,7 +72,8 @@ fun ProfileScreenRoute(
 fun ProfileScreen(
     uiState: ProfileUiState,
     navigateBack: () -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onMessageClick: () -> Unit
 ) {
     Scaffold(
         topBar = { ChaRoomTopAppBar(topBarTitle = "Profile", onNavigateBack = navigateBack) }
@@ -89,7 +92,7 @@ fun ProfileScreen(
                 }
 
                 is ProfileUiState.Success -> {
-                    ProfileContent(userData = uiState.userData)
+                    ProfileContent(userData = uiState.userData, onMessageClick = onMessageClick)
                 }
             }
         }
@@ -105,7 +108,7 @@ fun ProfileContent(
     //also make this route take a id:String so we can see if the load the users acourding to thier uid
 
 
-    onMessageClick: () -> Unit = {} // Action for the Message button
+    onMessageClick: () -> Unit  // Action for the Message button
 ) {
     Column(
         modifier = Modifier

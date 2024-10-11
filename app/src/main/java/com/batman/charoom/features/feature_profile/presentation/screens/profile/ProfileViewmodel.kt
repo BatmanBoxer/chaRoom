@@ -4,12 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batman.charoom.common.dataClass.UserData
-import com.batman.charoom.features.feature_chat_screen.data.repository.SearchRepository
 import com.batman.charoom.features.feature_chat_screen.domain.repository.HomeRepository
+import com.batman.charoom.features.feature_chat_screen.domain.repository.SearchRepository
 import com.batman.charoom.features.feature_profile.domain.model.User
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewmodel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val repository: HomeRepository,
+    private val homeRepository: HomeRepository,
+    private val searchRepository: SearchRepository,
     private val auth: FirebaseAuth
 
 ) : ViewModel() {
@@ -36,17 +36,24 @@ class ProfileViewmodel @Inject constructor(
 
     fun fetchUserData() {
         viewModelScope.launch {
-            val userData: UserData? = repository.getUserData(user ?: "")
+            val userData: UserData? = homeRepository.getUserData(user ?: "")
             if (userData != null) {
                 _profileUiState.value = ProfileUiState.Success(
                     User(
                         isLocalUser = userData.name == localUser,
                         name = userData.name,
-                        email = "null",
+                        email = userData.email,
                         imgUrl = userData.imgUrl
                     )
 
                 )
+            }
+        }
+    }
+    fun addUserToChat(){
+        viewModelScope.launch {
+            if (user != null) {
+                searchRepository.addUserToChat(id = user)
             }
         }
     }
