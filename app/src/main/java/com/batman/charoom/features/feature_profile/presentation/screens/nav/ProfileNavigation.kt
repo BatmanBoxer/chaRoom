@@ -13,7 +13,7 @@ fun NavGraphBuilder.profileNavRoute(
     navigateToSignUpScreen:()->Unit
 ) {
     navigation<NavProfileRoute>(
-        startDestination = NavProfileScreen
+        startDestination = NavProfileScreen("123")
     ){
         composable<NavProfileScreen>(){
             ProfileScreenRoute(
@@ -22,6 +22,6 @@ fun NavGraphBuilder.profileNavRoute(
         }
     }
 }
-fun NavController.navigateToProfileScreen() {
-    navigate(NavProfileScreen)
+fun NavController.navigateToProfileScreen(id:String) {
+    navigate(NavProfileScreen(id))
 }

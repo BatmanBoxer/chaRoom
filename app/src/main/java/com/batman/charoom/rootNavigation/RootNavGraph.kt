@@ -28,8 +28,8 @@ fun RootNavGraph(modifier: Modifier = Modifier) {
 
         chatScreenRoute(
             navController = navController,
-            navigateToProfileScreen =navController::navigateToProfileScreen
-        )
+            navigateToProfileScreen =navController::navigateToProfileScreen,
+            )
         profileNavRoute(
             navController = navController,
             navigateToSignUpScreen = navController::navigateToSignUpScreen

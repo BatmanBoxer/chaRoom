@@ -59,10 +59,6 @@ fun ProfileScreenRoute(
     val uiState by viewmodel.profileUiState.collectAsStateWithLifecycle()
 
     //we are not using launched effect to load initial data. intial data will be laoded from viewmodle so we can test it dufing test cases
-    LaunchedEffect(key1 = true) {
-        viewmodel.fetchUserData()
-    }
-
     ProfileScreen(
         uiState = uiState,
         navigateBack = navigateBack,
@@ -93,7 +89,7 @@ fun ProfileScreen(
                 }
 
                 is ProfileUiState.Success -> {
-                    ProfileContent()
+                    ProfileContent(userData = uiState.userData)
                 }
             }
         }
@@ -102,15 +98,9 @@ fun ProfileScreen(
 }
 
 @Composable
-@Preview(showSystemUi = true)
 fun ProfileContent(
     modifier: Modifier = Modifier,
-    userData: User = User(
-        isLocalUser = false,
-        name = "Pronay Sarker",
-        email = "pronaycoding@gmail.com",
-        imgUrl = null,
-    ),
+    userData: User,
     //make this button take a is user boolean so that we can show the message button only if the user is not the current user
     //also make this route take a id:String so we can see if the load the users acourding to thier uid
 

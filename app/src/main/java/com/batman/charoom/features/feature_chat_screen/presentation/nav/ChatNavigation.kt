@@ -6,14 +6,11 @@ import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.HdrWeak
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
-import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.HdrWeak
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,7 +20,6 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -38,39 +34,47 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.Navigation
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.batman.charoom.features.feature_chat_screen.domain.model.HomeNavButtons
 import com.batman.charoom.features.feature_chat_screen.presentation.screens.Chat.ChatUiScreenRoute
 import com.batman.charoom.features.feature_chat_screen.presentation.screens.home.HomeUiScreenRoute
+import com.batman.charoom.features.feature_chat_screen.presentation.screens.search.SearchScreen
+import com.batman.charoom.features.feature_profile.presentation.screens.nav.navigateToProfileScreen
 import com.batman.charoom.rootNavigation.NavChatScreen
 import com.batman.charoom.rootNavigation.NavChatScreenRoute
 import com.batman.charoom.rootNavigation.NavHomeScreen
+import com.batman.charoom.rootNavigation.NavSearchScreen
 import kotlinx.coroutines.launch
+import kotlin.reflect.KFunction2
 
 /**
  * Created by Pronay Sarker on 05/10/2024 (6:16 PM)
  */
 fun NavGraphBuilder.chatScreenRoute(
     navController: NavController,
-    navigateToProfileScreen: () -> Unit,
+    navigateToProfileScreen: (String) -> Unit,
 ) {
     navigation<NavChatScreenRoute>(
         startDestination = NavHomeScreen
     ) {
-        homeScreen(navigateToChatScreen = navController::navigateToChatScreen)
-
+        homeScreen(
+            navigateToChatScreen = navController::navigateToChatScreen,
+            navigateToProfileScreen = navController::navigateToSearchScreen
+        )
         chatScreen(navigateToHomeScreen = navController::popBackStack)
+        searchScreen(navigateToProfileScreen = navigateToProfileScreen)
     }
 }
 
 private fun NavGraphBuilder.homeScreen(
-    navigateToChatScreen: (String) -> Unit
+    navigateToChatScreen: (String) -> Unit,
+    navigateToProfileScreen: (id: String) -> Unit
 ) {
     composable<NavHomeScreen>() {
         HomeScreenRoute(
-            navigateToChatScreen = navigateToChatScreen
+            navigateToChatScreen = navigateToChatScreen,
+            navigateToSearchScreen = navigateToProfileScreen
         )
     }
 }
@@ -85,11 +89,20 @@ private fun NavGraphBuilder.chatScreen(
     }
 }
 
+private fun NavGraphBuilder.searchScreen(
+   navigateToProfileScreen:(id:String) -> Unit
+){
+    composable<NavSearchScreen> {
+        SearchScreen(navigateToProfileScreen)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenRoute(
     modifier: Modifier = Modifier,
     navigateToChatScreen: (String) -> Unit,
+    navigateToSearchScreen: (String) ->Unit
 ) {
     var currentActiveIndex by rememberSaveable { mutableIntStateOf(0) }
     var currentNavigationDrawerIndex by rememberSaveable { mutableStateOf(false) }
@@ -152,7 +165,8 @@ fun HomeScreenRoute(
         ) {
             HomeUiScreenRoute(
                 modifier = modifier.padding(it),
-                navigateToChatScreen = navigateToChatScreen
+                navigateToChatScreen = navigateToChatScreen,
+                navigateToSearchScreen = navigateToSearchScreen
             )
         }
     }
@@ -185,3 +199,8 @@ fun NavController.navigateToHomeScreen() {
 fun NavController.navigateToChatScreen(chaId: String) {
     navigate(NavChatScreen(chatId = chaId))
 }
+fun NavController.navigateToSearchScreen(name: String) {
+    navigate(NavSearchScreen(name))
+}
+
+

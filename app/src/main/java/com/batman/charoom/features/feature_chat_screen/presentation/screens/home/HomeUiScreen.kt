@@ -17,43 +17,35 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PersonSearch
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.batman.charoom.R
 import com.batman.charoom.common.component.ChaRoomErrorScreen
 import com.batman.charoom.common.component.ChaRoomLoadingWheel
 import com.batman.charoom.features.feature_chat_screen.domain.model.RecentChat
-import com.batman.charoom.common.objects.ChaRoomIcons
+import kotlin.reflect.KFunction2
 
 /**
  * Created by Pronay Sarker on 04/10/2024 (9:44 PM)
@@ -62,6 +54,7 @@ import com.batman.charoom.common.objects.ChaRoomIcons
 fun HomeUiScreenRoute(
     viewmodel: HomeViewmodel = hiltViewModel(),
     navigateToChatScreen: (String) -> Unit,
+    navigateToSearchScreen: (String)->Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewmodel.homeUiState.collectAsStateWithLifecycle()
@@ -69,7 +62,8 @@ fun HomeUiScreenRoute(
     HomeUiScreen(
         modifier = modifier,
         uiState = uiState,
-        navigateToChatScreen = navigateToChatScreen
+        navigateToChatScreen = navigateToChatScreen,
+        navigateToSearchScreen = navigateToSearchScreen
     )
 }
 
@@ -77,7 +71,8 @@ fun HomeUiScreenRoute(
 fun HomeUiScreen(
     uiState: HomeUiState,
     modifier: Modifier = Modifier,
-    navigateToChatScreen: (String) -> Unit
+    navigateToChatScreen: (String) -> Unit,
+    navigateToSearchScreen: (String) ->Unit
 ) {
     var searchItem by rememberSaveable { mutableStateOf("") }
 
@@ -93,7 +88,9 @@ fun HomeUiScreen(
                 singleLine = true,
                 placeholder = { Text(text = "Search in chats") },
                 trailingIcon = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        navigateToSearchScreen(searchItem)
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.PersonSearch,
                             contentDescription = "search chats"

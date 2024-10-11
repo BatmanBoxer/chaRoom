@@ -2,6 +2,8 @@ package com.batman.charoom.features.feature_chat_screen.di
 
 import com.batman.charoom.features.feature_chat_screen.data.repository.ChatRepositoryImpl
 import com.batman.charoom.features.feature_chat_screen.data.repository.HomeRepositoryImpl
+import com.batman.charoom.features.feature_chat_screen.data.repository.SearchRepository
+import com.batman.charoom.features.feature_chat_screen.data.repository.SearchRepositoryImp
 import com.batman.charoom.features.feature_chat_screen.domain.repository.ChatRepository
 import com.batman.charoom.features.feature_chat_screen.domain.repository.HomeRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,7 +18,7 @@ import javax.inject.Singleton
 object ChatModule {
     @Provides
     @Singleton
-    fun providesChatRepository(firebaseFirestore: FirebaseFirestore):ChatRepository{
+    fun providesChatRepository(firebaseFirestore: FirebaseFirestore): ChatRepository {
         return ChatRepositoryImpl(firebaseFirestore)
     }
 
@@ -24,6 +26,12 @@ object ChatModule {
     @Singleton
     fun providesHomeRepository(firebaseFirestore: FirebaseFirestore): HomeRepository {
         return HomeRepositoryImpl(firebaseFirestore)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSearchRepository(firestore: FirebaseFirestore): SearchRepository {
+        return SearchRepositoryImp(firestore)
     }
 
 }

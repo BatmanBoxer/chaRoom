@@ -32,4 +32,11 @@ data class NavChatScreen(
 object NavProfileRoute
 
 @Serializable
-object NavProfileScreen
+data class NavProfileScreen(
+    val id:String
+)
+
+@Serializable
+data class NavSearchScreen (
+    val name:String
+)

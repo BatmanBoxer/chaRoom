@@ -47,9 +47,7 @@ class HomeRepositoryImpl @Inject constructor(
 
                 if (snapshot != null) {
                     val chatRooms: List<ChatRoom> = snapshot.documents.mapNotNull { document ->
-                        // Get the document ID
                         val chatRoomId = document.id
-                        // Convert the document to a ChatRoom object, including the chatRoomId
                         val chatRoom = document.toObject(ChatRoom::class.java)?.copy(chatRoomId = chatRoomId)
                         chatRoom
                     }

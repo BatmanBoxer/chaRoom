@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batman.charoom.features.feature_chat_screen.domain.model.RecentChat
 import com.batman.charoom.features.feature_chat_screen.domain.repository.HomeRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -23,11 +24,13 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewmodel @Inject constructor(
-    private val homeRepository: HomeRepository
+    private val homeRepository: HomeRepository,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val homeUiState: StateFlow<HomeUiState> = _homeUiState
+    private val user = firebaseAuth.currentUser?.uid ?: "null"
 
     init {
         viewModelScope.launch {
@@ -47,7 +50,7 @@ class HomeViewmodel @Inject constructor(
             Log.d("HomeViewmodel", "User:$user")
         }
 
-        fetchData("darwin")
+        fetchData(user)
     }
 
     private fun fetchData(Localuserid: String) {
@@ -56,15 +59,12 @@ class HomeViewmodel @Inject constructor(
             _homeUiState.value = HomeUiState.Loading
             homeRepository.listenForChatRoomsForParticipant(Localuserid) { chatRooms ->
                 val recentChat: MutableList<RecentChat> = mutableListOf()
-
-                // Use coroutineScope to await results
                 viewModelScope.launch {
-                    // Create a list of deferred results using async
                     val deferredResults = chatRooms.map { room ->
                         async {
-                            val userID = "testid"
-                            // Call the suspend function within the async block
-                            val userData = homeRepository.getUserData(userID)
+                            val userData = homeRepository.getUserData(
+                                room.participants?.filter { it != Localuserid }?.get(0) ?: "null"
+                            )
                             userData?.let {
                                 RecentChat(
                                     chatId = room.chatRoomId ?: "null",
@@ -72,15 +72,11 @@ class HomeViewmodel @Inject constructor(
                                     it.imgUrl ?: "null",
                                     formater.format(room.lastMessageTime?.toDate() ?: Date()),
                                     timestamp = room.lastMessageTime.toString(),
-
-                                )
+                                    )
                             }
                         }
                     }
-
-                    // Await all results and filter out nulls
                     recentChat.addAll(deferredResults.awaitAll().filterNotNull())
-
                     _homeUiState.value = HomeUiState.Success(recentChat)
                     Log.d("userChat", recentChat.toString())
                 }
