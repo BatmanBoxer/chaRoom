@@ -24,8 +24,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewmodel @Inject constructor(
-    private val homeRepository: HomeRepository,
-    private val firebaseAuth: FirebaseAuth
+    private val homeRepository: HomeRepository, private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -38,40 +37,39 @@ class HomeViewmodel @Inject constructor(
 
     private fun fetchData(localUserId: String) {
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-
         viewModelScope.launch {
             _homeUiState.value = HomeUiState.Loading
 
             homeRepository.listenForChatRoomsForParticipant(localUserId) { chatRooms ->
-                val recentChat: MutableList<RecentChat> = mutableListOf()
-
+                val recentChats: MutableList<RecentChat> = mutableListOf()
                 viewModelScope.launch {
-                    val deferredResults = chatRooms.map { room ->
-                        async {
-                            val otherParticipantId = room.participants?.filter { it != localUserId }?.firstOrNull()
-                            otherParticipantId?.let {
-                                val userData = homeRepository.getUserData(it)
-                                userData?.let { user ->
-                                    RecentChat(
-                                        chatId = room.chatRoomId ?: "null",
-                                        name = user.name ?: "Unknown",
-                                        profileImageUrl = user.imgUrl ?: "default_image_url",
-                                        lastMessage = formatter.format(room.lastMessageTime?.toDate() ?: Date()),
-                                        timestamp = room.lastMessageTime?.toString() ?: "Unknown"
-                                    )
-                                }
+                    chatRooms.map { room ->
+                        val otherParticipantId =
+                            room.participants?.firstOrNull { it != localUserId }
+                        otherParticipantId?.let {
+                            val userData = homeRepository.getUserData(it)
+                            val recentChat = userData?.let { user ->
+                                RecentChat(
+                                    chatId = room.chatRoomId ?: "null",
+                                    name = user.name ?: "Unknown",
+                                    profileImageUrl = user.imgUrl ?: "default_image_url",
+                                    lastMessage = formatter.format(
+                                        room.lastMessageTime?.toDate() ?: Date()
+                                    ),
+                                    timestamp = room.lastMessageTime?.toString() ?: "Unknown"
+                                )
+                            }
+                            if (recentChat != null) {
+                                recentChats.add(recentChat)
                             }
                         }
-                    }
-                    recentChat.addAll(deferredResults.awaitAll().filterNotNull())
-                    _homeUiState.value = HomeUiState.Success(recentChat)
 
-                    Log.d("userChat", recentChat.toString())
+                    }
+                    _homeUiState.value = HomeUiState.Success(recentChats)
                 }
             }
         }
     }
-
 
 
 }

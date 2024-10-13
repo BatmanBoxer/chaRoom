@@ -19,10 +19,10 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ProfileViewmodel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val homeRepository: HomeRepository,
     private val searchRepository: SearchRepository,
-    private val auth: FirebaseAuth
+    auth: FirebaseAuth
 
 ) : ViewModel() {
     private val localUser = auth.currentUser?.uid

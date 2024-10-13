@@ -98,6 +98,9 @@ dependencies {
     implementation ("androidx.compose.material:material-icons-extended:1.7.2")
     implementation ("com.github.commandiron:ComposeLoading:1.0.4")
 
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
 
 
 }
